@@ -1,22 +1,31 @@
 package gui;
 
+import static graphics.Transform.*;
 import static java.awt.Color.*;
 import static java.lang.Math.*;
 import static javax.swing.KeyStroke.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import java.util.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
 
+import graph.*;
 import graph.bipartite.*;
-import graphics.*;
 import graphics.Vector;
 
 public class View extends JPanel {
   private static final long serialVersionUID = 2621550208556045621L;
+  private static final double SPEED = 0.2;
+  private static final double RESOLUTION = 200;
+  private static final double ARROW_SIZE = 8;
+
+  private static Graphics2D graphics2D;
+
+  public static View view = new View();
 
   private Vector translate = new Vector(0, 0, 0);
 
@@ -28,17 +37,17 @@ public class View extends JPanel {
     addMouseListener(listener);
     addMouseMotionListener(listener);
 
-    bindKeys(() -> translateAction( 1,  0,  0), "A", "LEFT", "released D", "released RIGHT");
-    bindKeys(() -> translateAction(-1,  0,  0), "D", "RIGHT", "released A", "released LEFT");
-    bindKeys(() -> translateAction( 0,  1,  0), "SPACE", "released SHIFT");
-    bindKeys(() -> translateAction( 0, -1,  0), "shift SHIFT", "released SPACE");
-    bindKeys(() -> translateAction( 0,  0,  1), "S", "DOWN", "released W", "released UP");
-    bindKeys(() -> translateAction( 0,  0, -1), "W", "UP", "released S", "released DOWN");
+    bindKeys(() -> translateAction( SPEED/2,  0, 0), "A", "LEFT", "released D", "released RIGHT");
+    bindKeys(() -> translateAction(-SPEED/2,  0, 0), "D", "RIGHT", "released A", "released LEFT");
+    bindKeys(() -> translateAction( 0,  SPEED/3, 0), "SPACE", "released SHIFT");
+    bindKeys(() -> translateAction( 0, -SPEED/3, 0), "shift SHIFT", "released SPACE");
+    bindKeys(() -> translateAction( 0,  0,   SPEED), "S", "DOWN", "released W", "released UP");
+    bindKeys(() -> translateAction( 0,  0,  -SPEED), "W", "UP", "released S", "released DOWN");
 
     bindKeys(this::transferFocusUpCycle, "ESCAPE");
 
     new Timer(10, event -> {
-      Transform.translate(translate);
+      translate(translate);
       repaint();
     }).start();
   }
@@ -59,51 +68,87 @@ public class View extends JPanel {
   }
 
   private void translateAction(double dx, double dy, double dz) {
-    translate.x = min(1, max(-1, translate.x + dx));
-    translate.y = min(1, max(-1, translate.y + dy));
-    translate.z = min(1, max(-1, translate.z + dz));
+    translate.x = min(SPEED/2, max(-SPEED/2, translate.x + dx));
+    translate.y = min(SPEED/3, max(-SPEED/3, translate.y + dy));
+    translate.z = min(SPEED,   max(-SPEED,   translate.z + dz));
   }
 
   @Override
   protected void paintComponent(Graphics graphics) {
     super.paintComponent(graphics);
 
-    Graphics2D graphics_2d = (Graphics2D)graphics;
+    graphics2D = (Graphics2D)graphics;
+    graphics2D.translate(getWidth()/2, getHeight()/2);
 
-    graphics_2d.translate(getWidth()/2, getHeight()/2);
+    graphics2D.setColor(gray);
+    Person.people.forEach(Drawable::draw);
 
-    Vector[] corners = new Vector[] {
-        new Vector(0, 0, 0),
-        new Vector(0, 0, 10),
-        new Vector(0, 10, 0),
-        new Vector(0, 10, 10),
-        new Vector(10, 0, 0),
-        new Vector(10, 0, 10),
-        new Vector(10, 10, 0),
-        new Vector(10, 10, 10)
-    };
+    graphics2D.setColor(black);
+    Graph.nodes.forEach(Drawable::draw);
 
-    for (Vector first: corners) {
-      for (Vector second: corners) {
-        drawLine(graphics, first, second);
-      }
-    }
+    graphics2D = null;
+  }
 
-    graphics.setColor(gray);
-    for (Person person: Person.people) {
-      drawLine(graphics, new Vector(person.index*6, 0, 0), new Vector(person.index*6, -24, 0));
-      Vector name_position = Transform.transform(new Vector(person.index*6, -24, 0));
+  public static void drawLine(Vector start, Vector end) {
+    double scaled_resolution = RESOLUTION/max(distance(start), distance(end));
+    Vector step = end.minus(start).unit().divide(scaled_resolution);
+    Vector current = start.copy();
 
-      graphics_2d.drawString(person.name, (int)name_position.x + 2, (int)name_position.y + 2);
+    for (int i = 0; i < end.minus(start).norm()*scaled_resolution - 1; i++) {
+      Point2D first = transform(current).point2D(), second = transform(current.plus(step)).point2D();
+
+      if (Double.isFinite(first.getX() + first.getY() + second.getX() + second.getY()))
+        graphics2D.draw(new Line2D.Double(transform(current).point2D(), transform(current.plus(step)).point2D()));
+
+      current = current.plus(step);
     }
   }
 
-  private void drawLine(Graphics graphics, Vector start, Vector end) {
-    Vector start_transformed = Transform.transform(start);
-    Vector   end_transformed = Transform.transform(end);
+  public static void drawArrow(Vector start, Vector end) {
+    drawLine(start, end);
 
-    graphics.drawLine((int)start_transformed.x, (int)start_transformed.y,
-                      (int)  end_transformed.x, (int)  end_transformed.y);
+    Vector tip      = transform(end);
+    Vector parallel = transform(start).minus(tip).unit();
+    Vector normal   = new Vector(-parallel.y, parallel.x);
+
+    Vector next_point = tip;
+
+    Path2D arrow_head = new Path2D.Double();
+    arrow_head.moveTo(next_point.x, next_point.y);
+
+    next_point = tip.plus(parallel.times(ARROW_SIZE)).plus(normal.times(ARROW_SIZE/2));
+    arrow_head.lineTo(next_point.x, next_point.y);
+
+    next_point = tip.plus(parallel.times(ARROW_SIZE*0.75));
+    arrow_head.lineTo(next_point.x, next_point.y);
+
+    next_point = tip.plus(parallel.times(ARROW_SIZE)).plus(normal.times(-ARROW_SIZE/2));
+    arrow_head.lineTo(next_point.x, next_point.y);
+
+    arrow_head.closePath();
+
+    graphics2D.fill(arrow_head);
+  }
+
+  public static void drawText(String text, Vector position) {
+    Vector transformed = transform(position);
+
+    graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
+  }
+
+  public static void drawPoint(Vector position, double size, Color color) {
+    double scaled_size = size/distance(position);
+    Vector transformed = transform(position);
+
+    Ellipse2D point = new Ellipse2D.Double(transformed.x - scaled_size/2,
+                                           transformed.y - scaled_size/2,
+                                           scaled_size, scaled_size);
+
+    graphics2D.setColor(color);
+    graphics2D.fill(point);
+
+    graphics2D.setColor(black);
+    graphics2D.draw(point);
   }
 
   private class ViewListener extends MouseAdapter {
@@ -117,7 +162,7 @@ public class View extends JPanel {
 
     @Override
     public void mouseDragged(MouseEvent event) {
-        Transform.rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
+        rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
         previous = event.getPoint();
     }
   }

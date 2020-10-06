@@ -34,7 +34,7 @@ public class Application extends JPanel {
 
     constraint.weighty = 1;
 
-    add(new View(), constraint);
+    add(View.view, constraint);
 
     constraint.weighty = 0;
 

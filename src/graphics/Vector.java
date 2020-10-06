@@ -3,12 +3,16 @@ package graphics;
 import static java.lang.Double.*;
 import static java.lang.Math.*;
 
+import java.awt.geom.*;
+
 public class Vector {
   public double x;
   public double y;
   public double z;
 
-  public Vector() {}
+  public Vector() {
+    this(POSITIVE_INFINITY, POSITIVE_INFINITY);
+  }
 
   public Vector(double x, double y) {
     this(x, y, NaN);
@@ -46,5 +50,17 @@ public class Vector {
 
   public Vector unit() {
     return norm() == 0? this: divide(norm());
+  }
+
+  public Point2D point2D() {
+    return new Point2D.Double(x, y);
+  }
+
+  public Vector copy() {
+    return new Vector(x, y, z);
+  }
+
+  public Vector mirrorY() {
+    return new Vector(x, -y, z);
   }
 }

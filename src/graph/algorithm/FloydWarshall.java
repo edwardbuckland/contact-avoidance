@@ -1,12 +1,12 @@
 package graph.algorithm;
 
+import static graph.Graph.*;
+
 import java.util.Map.*;
 
-import graph.*;
-
 public class FloydWarshall {
-  public static double[][] floydWarshall(Graph graph) {
-    int n = graph.size();
+  public static double[][] floydWarshall() {
+    int n = nodes.size();
 
     double[][] distances = new double[n][n];
 
@@ -15,8 +15,8 @@ public class FloydWarshall {
         distances[i][j] = i == j? 0: Double.POSITIVE_INFINITY;
 
     for (int i = 0; i < n; i++)
-      for (Entry<Node, Double> edge: graph.get(i).edges.entrySet())
-        distances[i][graph.indexOf(edge.getKey())] = edge.getValue();
+      for (Entry<Node, Double> edge: nodes.get(i).edges.entrySet())
+        distances[i][nodes.indexOf(edge.getKey())] = edge.getValue();
 
     for (int k = 0; k < n; k++)
       for (int i = 0; i < n; i++)
