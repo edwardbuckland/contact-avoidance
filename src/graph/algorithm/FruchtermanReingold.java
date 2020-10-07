@@ -14,12 +14,12 @@ import graphics.Vector;
 import gui.*;
 
 public class FruchtermanReingold {
-  public static AtomicInteger temperature = new AtomicInteger(50), attraction = new AtomicInteger(50);
+  public static AtomicInteger attraction = new AtomicInteger(50);
 
   public static Timer timer = new Timer(10, event ->
   {
     Map<Node, Vector> displacement = new HashMap<>();
-    double k = sqrt(1.0/nodes.size());
+    double k = sqrt(5.0/nodes.size());
 
     // repel pairs
     for (Node first: nodes) {
@@ -46,8 +46,8 @@ public class FruchtermanReingold {
          .filter(Activity.class::isInstance)
          .forEach(node -> {
            Vector delta = displacement.get(node);
-           delta = delta.unit().times(min(delta.norm(), temperature.get()/100.0));
-           node.location = node.location.plus(new Vector(delta.x, 0, delta.z));
+           delta.y = 0;
+           node.location = node.location.plus(delta);
          });
 
     View.view.repaint();

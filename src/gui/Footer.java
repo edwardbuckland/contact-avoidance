@@ -11,28 +11,26 @@ import graph.algorithm.*;
 public class Footer extends JPanel {
   private static final long serialVersionUID = 3279546830043780324L;
 
+  private static final String PLAY = "\u25b6";
+  private static final String STOP = "\u25fc";
+
   private JLabel label = new JLabel();
 
   public Footer() {
     add(label);
 
-    JToggleButton play_pause_button = new JToggleButton("\u25b6");
+    JButton play_pause_button = new JButton(PLAY);
     play_pause_button.addActionListener(event -> {
-      if (play_pause_button.isSelected()) {
+      if (play_pause_button.getText() == PLAY) {
         FruchtermanReingold.timer.start();
-        play_pause_button.setText("\u25fc");
+        play_pause_button.setText(STOP);
       }
       else {
         FruchtermanReingold.timer.stop();
-        play_pause_button.setText("\u25b6");
+        play_pause_button.setText(PLAY);
       }
     });
     add(play_pause_button);
-
-    add(new JLabel("Temperature: "));
-    JSlider temperature_slider = new JSlider();
-    temperature_slider.addChangeListener(event -> FruchtermanReingold.temperature.set(temperature_slider.getValue()));
-    add(temperature_slider);
 
     add(new JLabel("Attraction: "));
     JSlider attraction_slider = new JSlider();

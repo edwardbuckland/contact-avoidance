@@ -3,8 +3,6 @@ package graphics;
 import static java.lang.Double.*;
 import static java.lang.Math.*;
 
-import java.awt.geom.*;
-
 public class Vector {
   public double x;
   public double y;
@@ -50,10 +48,6 @@ public class Vector {
 
   public Vector unit() {
     return norm() == 0? this: divide(norm());
-  }
-
-  public Point2D point2D() {
-    return new Point2D.Double(x, y);
   }
 
   public Vector copy() {

@@ -3,13 +3,16 @@ package gui;
 import static graphics.Transform.*;
 import static java.awt.AlphaComposite.*;
 import static java.awt.Color.*;
+import static java.awt.RenderingHints.*;
 import static java.lang.Math.*;
+import static javax.swing.BorderFactory.*;
 import static javax.swing.KeyStroke.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.util.stream.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -20,8 +23,8 @@ import graphics.Vector;
 
 public class View extends JPanel {
   private static final long serialVersionUID = 2621550208556045621L;
-  private static final double SPEED = 0.2;
-  private static final double RESOLUTION = 100;
+  private static final double SPEED = 0.4;
+  private static final double RESOLUTION = 20;
   private static final double ARROW_SIZE = 8;
 
   private static final int CUBE = 100;
@@ -36,20 +39,21 @@ public class View extends JPanel {
     setBackground(white);
     setFocusable(true);
 
-    ViewListener listener = new ViewListener();
-    addMouseListener(listener);
-    addMouseMotionListener(listener);
+    Stream.of(new ViewListener())
+          .peek(this::addMouseListener)
+          .peek(this::addMouseMotionListener)
+          .forEach(this::addFocusListener);
 
-    bindKeys(() -> translateAction( SPEED/2,  0, 0), "A", "LEFT", "released D", "released RIGHT");
-    bindKeys(() -> translateAction(-SPEED/2,  0, 0), "D", "RIGHT", "released A", "released LEFT");
-    bindKeys(() -> translateAction( 0,  SPEED/3, 0), "SPACE", "released SHIFT");
-    bindKeys(() -> translateAction( 0, -SPEED/3, 0), "shift SHIFT", "released SPACE");
-    bindKeys(() -> translateAction( 0,  0,   SPEED), "S", "DOWN", "released W", "released UP");
-    bindKeys(() -> translateAction( 0,  0,  -SPEED), "W", "UP", "released S", "released DOWN");
+    bindKeys(() -> setTranslation( SPEED/2,  0, 0), "A", "LEFT", "released D", "released RIGHT");
+    bindKeys(() -> setTranslation(-SPEED/2,  0, 0), "D", "RIGHT", "released A", "released LEFT");
+    bindKeys(() -> setTranslation( 0,  SPEED/3, 0), "SPACE", "released SHIFT");
+    bindKeys(() -> setTranslation( 0, -SPEED/3, 0), "shift SHIFT", "released SPACE");
+    bindKeys(() -> setTranslation( 0,  0,   SPEED), "S", "DOWN", "released W", "released UP");
+    bindKeys(() -> setTranslation( 0,  0,  -SPEED), "W", "UP", "released S", "released DOWN");
 
     bindKeys(this::transferFocusUpCycle, "ESCAPE");
 
-    new Timer(10, event -> {
+    new Timer(5, event -> {
       translate(translate);
       repaint();
     }).start();
@@ -70,7 +74,7 @@ public class View extends JPanel {
     });
   }
 
-  private void translateAction(double dx, double dy, double dz) {
+  private void setTranslation(double dx, double dy, double dz) {
     translate.x = min(SPEED/2, max(-SPEED/2, translate.x + dx));
     translate.y = min(SPEED/3, max(-SPEED/3, translate.y + dy));
     translate.z = min(SPEED,   max(-SPEED,   translate.z + dz));
@@ -81,10 +85,12 @@ public class View extends JPanel {
     super.paintComponent(graphics);
 
     graphics2D = (Graphics2D)graphics;
-    graphics2D.translate(getWidth()/2, getHeight()/2);
-    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    graphics2D.setComposite(getInstance(SRC_OVER, 0.5f));
+    AffineTransform transform = graphics2D.getTransform();
+    graphics2D.translate(getWidth()/2, getHeight()/2);
+
+    graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    graphics2D.setComposite(getInstance(SRC_OVER, 0.65f));
 
     for (int i = -CUBE; i <= CUBE; i += 10)
       for (int j = -CUBE; j <= CUBE; j += 10) {
@@ -96,7 +102,7 @@ public class View extends JPanel {
         drawPoint(new Vector(    i,     j, -CUBE), 500, new Color((float)((i + CUBE)/2.0/CUBE), (float)((j + CUBE)/2.0/CUBE), 0f));
       }
 
-    graphics2D.setComposite(getInstance(SRC_OVER, 0.7f));
+
     graphics2D.setColor(lightGray);
     Person.people.forEach(Drawable::draw);
 
@@ -104,6 +110,7 @@ public class View extends JPanel {
     graphics2D.setColor(black);
     Graph.nodes.forEach(Drawable::draw);
 
+    graphics2D.setTransform(transform);
     graphics2D = null;
   }
 
@@ -112,13 +119,28 @@ public class View extends JPanel {
     Vector step = end.minus(start).unit().divide(scaled_resolution);
     Vector current = start.copy();
 
-    for (int i = 0; i < end.minus(start).norm()*scaled_resolution - 1; i++) {
-      Point2D first = transform(current).point2D(), second = transform(current.plus(step)).point2D();
+    Path2D line = null;
 
-      if (Double.isFinite(first.getX() + first.getY() + second.getX() + second.getY()))
-        graphics2D.draw(new Line2D.Double(transform(current).point2D(), transform(current.plus(step)).point2D()));
+    for (int i = 0; i < max(1, end.minus(start).norm()*scaled_resolution); i++) {
+      Vector transformed = transform(current);
+
+      if (Double.isFinite(transformed.norm())) {
+        if (line == null) {
+          line = new Path2D.Double();
+          line.moveTo(transformed.x, transformed.y);
+        }
+        else
+          line.lineTo(transformed.x, transformed.y);
+      }
 
       current = current.plus(step);
+    }
+
+    if (line != null) {
+      current = transform(end);
+      line.lineTo(current.x, current.y);
+
+      graphics2D.draw(line);
     }
   }
 
@@ -152,18 +174,16 @@ public class View extends JPanel {
     Vector transformed = transform(position);
 
     Color color = graphics2D.getColor();
-    Composite composite = graphics2D.getComposite();
 
     graphics2D.setColor(black);
-    graphics2D.setComposite(getInstance(SRC_OVER, 0.7f));
 
     graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
 
     graphics2D.setColor(color);
-    graphics2D.setComposite(composite);
   }
 
   public static void drawPoint(Vector position, double size, Color color) {
+
     double scaled_size = size/distance(position);
     Vector transformed = transform(position);
 
@@ -171,14 +191,20 @@ public class View extends JPanel {
                                            transformed.y - scaled_size/2,
                                            scaled_size, scaled_size);
 
+    Stroke stroke = graphics2D.getStroke();
+
+    graphics2D.setStroke(new BasicStroke((float)max(scaled_size/50, 0.4)));
+
     graphics2D.setColor(color);
     graphics2D.fill(point);
 
     graphics2D.setColor(black);
     graphics2D.draw(point);
+
+    graphics2D.setStroke(stroke);
   }
 
-  private class ViewListener extends MouseAdapter {
+  private class ViewListener extends MouseAdapter implements FocusListener {
     private Point previous;
 
     @Override
@@ -191,6 +217,18 @@ public class View extends JPanel {
     public void mouseDragged(MouseEvent event) {
         rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
         previous = event.getPoint();
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      setBorder(createLineBorder(darkGray, 2));
+
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+      setTranslation(0, 0, 0);
+      setBorder(createLineBorder(darkGray, 1));
     }
   }
 }
