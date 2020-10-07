@@ -1,6 +1,7 @@
 package gui;
 
 import static graphics.Transform.*;
+import static java.awt.AlphaComposite.*;
 import static java.awt.Color.*;
 import static java.lang.Math.*;
 import static javax.swing.KeyStroke.*;
@@ -20,8 +21,10 @@ import graphics.Vector;
 public class View extends JPanel {
   private static final long serialVersionUID = 2621550208556045621L;
   private static final double SPEED = 0.2;
-  private static final double RESOLUTION = 200;
+  private static final double RESOLUTION = 100;
   private static final double ARROW_SIZE = 8;
+
+  private static final int CUBE = 100;
 
   private static Graphics2D graphics2D;
 
@@ -79,10 +82,25 @@ public class View extends JPanel {
 
     graphics2D = (Graphics2D)graphics;
     graphics2D.translate(getWidth()/2, getHeight()/2);
+    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    graphics2D.setColor(gray);
+    graphics2D.setComposite(getInstance(SRC_OVER, 0.5f));
+
+    for (int i = -CUBE; i <= CUBE; i += 10)
+      for (int j = -CUBE; j <= CUBE; j += 10) {
+        drawPoint(new Vector( CUBE,     i,     j), 500, new Color(1f, (float)((i + CUBE)/2.0/CUBE), (float)((j + CUBE)/2.0/CUBE)));
+        drawPoint(new Vector(-CUBE,     i,     j), 500, new Color(0f, (float)((i + CUBE)/2.0/CUBE), (float)((j + CUBE)/2.0/CUBE)));
+        drawPoint(new Vector(    i,  CUBE,     j), 500, new Color((float)((i + CUBE)/2.0/CUBE), 1f, (float)((j + CUBE)/2.0/CUBE)));
+        drawPoint(new Vector(    i, -CUBE,     j), 500, new Color((float)((i + CUBE)/2.0/CUBE), 0f, (float)((j + CUBE)/2.0/CUBE)));
+        drawPoint(new Vector(    i,     j,  CUBE), 500, new Color((float)((i + CUBE)/2.0/CUBE), (float)((j + CUBE)/2.0/CUBE), 1f));
+        drawPoint(new Vector(    i,     j, -CUBE), 500, new Color((float)((i + CUBE)/2.0/CUBE), (float)((j + CUBE)/2.0/CUBE), 0f));
+      }
+
+    graphics2D.setComposite(getInstance(SRC_OVER, 0.7f));
+    graphics2D.setColor(lightGray);
     Person.people.forEach(Drawable::draw);
 
+    graphics2D.setStroke(new BasicStroke(1.5f));
     graphics2D.setColor(black);
     Graph.nodes.forEach(Drawable::draw);
 
@@ -133,7 +151,16 @@ public class View extends JPanel {
   public static void drawText(String text, Vector position) {
     Vector transformed = transform(position);
 
+    Color color = graphics2D.getColor();
+    Composite composite = graphics2D.getComposite();
+
+    graphics2D.setColor(black);
+    graphics2D.setComposite(getInstance(SRC_OVER, 0.7f));
+
     graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
+
+    graphics2D.setColor(color);
+    graphics2D.setComposite(composite);
   }
 
   public static void drawPoint(Vector position, double size, Color color) {

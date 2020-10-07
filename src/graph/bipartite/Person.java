@@ -1,6 +1,7 @@
 package graph.bipartite;
 
 import static gui.View.*;
+import static java.awt.Color.*;
 
 import java.util.*;
 
@@ -32,17 +33,17 @@ public class Person extends ArrayList<Node> implements Drawable {
 
     people.add(this);
 
-    Node node = new Node(timePoint(0));
+    Node node = new Node(timePoint(0), green);
     node.edges.put(activities[0], 1.0);
     add(node);
 
     for (int i = 0; i < activities.length - 1; i++) {
-      node = new Node(timePoint((activities[i].endTime + activities[i + 1].startTime)/2));
+      node = new Node(timePoint((activities[i].endTime + activities[i + 1].startTime)/2), green);
       activities[i].edges.put(node, 1.0);
       node.edges.put(activities[i + 1], 1.0);
     }
 
-    node = new Node(timePoint(24));
+    node = new Node(timePoint(24), green);
     activities[activities.length - 1].edges.put(node, 1.0);
   }
 

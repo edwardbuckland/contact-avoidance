@@ -27,17 +27,14 @@ public class Application extends JPanel {
     GridBagConstraints constraint = new GridBagConstraints();
     constraint.fill = GridBagConstraints.BOTH;
     constraint.weightx = 1;
+    constraint.weighty = 1;
     constraint.insets = new Insets(4, 4, 4, 4);
     constraint.gridwidth = GridBagConstraints.REMAINDER;
-
-    add(new JButton("test"), constraint);
-
-    constraint.weighty = 1;
 
     add(View.view, constraint);
 
     constraint.weighty = 0;
 
-    add(new JButton("test2"), constraint);
+    add(new Footer(), constraint);
   }
 }

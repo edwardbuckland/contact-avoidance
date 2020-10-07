@@ -13,7 +13,7 @@ public class Transform {
   }
 
   public static double distance(Vector vector) {
-    return rotate(vector.plus(position), phi, theta).norm();
+    return rotate(vector.mirrorY().plus(position), phi, theta).norm();
   }
 
   public static void translate(Vector vector) {
