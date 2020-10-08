@@ -4,37 +4,25 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class Application extends JPanel {
-  private static final long serialVersionUID = -6569935836612715941L;
+import gui.admin.*;
+import gui.user.*;
 
-  public static Application panel;
-
-  private static String title = "MapAPL Demo";
-
+public class Application{
   public static void main(String[] args) {
-    JFrame frame = new JFrame(title);
-    frame.setContentPane(panel = new Application());
-    frame.setMinimumSize(new Dimension(1000, 600));
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-    frame.pack();
-    frame.setVisible(true);
-  }
+    JFrame admin = new JFrame("MapAPL Demo");
+    admin.setContentPane(new AdminPanel());
+    admin.setMinimumSize(new Dimension(1000, 600));
+    admin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    admin.setLocationRelativeTo(null);
+    admin.pack();
+    admin.setVisible(true);
 
-  private Application() {
-    super(new GridBagLayout());
-
-    GridBagConstraints constraint = new GridBagConstraints();
-    constraint.fill = GridBagConstraints.BOTH;
-    constraint.weightx = 1;
-    constraint.weighty = 1;
-    constraint.insets = new Insets(4, 4, 4, 4);
-    constraint.gridwidth = GridBagConstraints.REMAINDER;
-
-    add(View.view, constraint);
-
-    constraint.weighty = 0;
-
-    add(new Footer(), constraint);
+    JFrame user = new JFrame("MapAPL Demo App");
+    user.setContentPane(new UserPanel());
+    user.setMinimumSize(new Dimension(355, 718));
+    user.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    user.setResizable(false);
+    user.pack();
+    user.setVisible(true);
   }
 }

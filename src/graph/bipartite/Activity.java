@@ -1,6 +1,6 @@
 package graph.bipartite;
 
-import static gui.View.*;
+import static gui.admin.View.*;
 import static java.awt.Color.*;
 
 import graph.Graph.*;

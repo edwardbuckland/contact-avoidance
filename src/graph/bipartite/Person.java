@@ -1,13 +1,13 @@
 package graph.bipartite;
 
-import static gui.View.*;
+import static gui.admin.View.*;
 import static java.awt.Color.*;
 
 import java.util.*;
 
 import graph.Graph.*;
 import graphics.Vector;
-import gui.*;
+import gui.admin.*;
 
 public class Person extends ArrayList<Node> implements Drawable {
   private static final long serialVersionUID = -3796609626176481425L;
@@ -24,8 +24,8 @@ public class Person extends ArrayList<Node> implements Drawable {
     Activity coffee = new Activity("coffee", 12, 13);
     Activity cake = new Activity("cake", 15, 23);
 
-    new Person("John", maths, cafe, cake);
-    new Person("Smith", maths, coffee);
+    new Person("John Smith", maths, cafe, cake);
+    new Person("Frank Furter", maths, coffee);
   }
 
   public Person(String name, Activity... activities) {
@@ -55,5 +55,10 @@ public class Person extends ArrayList<Node> implements Drawable {
   public void draw() {
     drawLine(timePoint(0), timePoint(24));
     drawText(name, timePoint(24));
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

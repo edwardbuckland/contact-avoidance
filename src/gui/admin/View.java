@@ -1,4 +1,4 @@
-package gui;
+package gui.admin;
 
 import static graph.Graph.*;
 import static graphics.Transform.*;
@@ -26,7 +26,7 @@ import graphics.Vector;
 public class View extends JPanel {
   private static final long serialVersionUID = 2621550208556045621L;
 
-  private static final double SPEED = 0.4;
+  private static final double SPEED = 0.6;
   private static final double RESOLUTION = 20;
   private static final double ARROW_SIZE = 8;
 

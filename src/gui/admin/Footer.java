@@ -1,4 +1,4 @@
-package gui;
+package gui.admin;
 
 import static graph.Graph.*;
 

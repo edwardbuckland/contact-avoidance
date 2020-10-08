@@ -1,6 +1,6 @@
 package graph;
 
-import static gui.View.*;
+import static gui.admin.View.*;
 
 import java.awt.*;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.stream.*;
 
 import graph.algorithm.*;
 import graphics.Vector;
-import gui.*;
+import gui.admin.*;
 
 public class Graph {
   public static List<Node> nodes = new ArrayList<>();

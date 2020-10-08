@@ -11,7 +11,7 @@ import javax.swing.Timer;
 import graph.Graph.*;
 import graph.bipartite.*;
 import graphics.Vector;
-import gui.*;
+import gui.admin.*;
 
 public class FruchtermanReingold {
   public static AtomicInteger attraction = new AtomicInteger(50);
