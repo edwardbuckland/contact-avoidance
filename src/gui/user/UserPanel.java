@@ -19,8 +19,8 @@ public class UserPanel extends JPanel {
     add(new UserSelector(), BorderLayout.NORTH);
 
     JTabbedPane tabbed_pane = new JTabbedPane();
-    tabbed_pane.insertTab("Timetable", null, new Timetable(), "Timetable", 0);
-    tabbed_pane.insertTab("Map", null, new MapView(), "Map", 1);
+    tabbed_pane.insertTab("Timetable", null, new JScrollPane(new Timetable()), "Timetable", 0);
+    tabbed_pane.insertTab("Map", null, new JScrollPane(new MapView()), "Map", 1);
     add(tabbed_pane);
   }
 

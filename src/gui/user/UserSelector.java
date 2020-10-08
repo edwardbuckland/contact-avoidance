@@ -1,6 +1,7 @@
 package gui.user;
 
 import java.awt.*;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -17,7 +18,22 @@ public class UserSelector extends JPanel {
   public UserSelector() {
     super(new BorderLayout());
 
+    label.setHorizontalAlignment(JLabel.CENTER);
     add(label);
+
+    button.addActionListener(event -> {
+      String name = JOptionPane.showInputDialog(this, "Name: ", "Select User", JOptionPane.PLAIN_MESSAGE);
+      if (name != null) {
+        Optional<Person> new_user = Person.people.stream()
+                                          .filter(person -> person.name.equals(name))
+                                          .findFirst();
+
+        if (new_user.isPresent())
+          currentUser = new_user.get();
+        else
+          currentUser = new Person(name);
+      }
+    });
     add(button, BorderLayout.EAST);
   }
 
