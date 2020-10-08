@@ -10,6 +10,8 @@ import java.awt.geom.Arc2D.Double;
 
 import javax.swing.*;
 
+import gui.user.tab.*;
+
 public class UserPanel extends JPanel {
   private static final long serialVersionUID = 8753354135329406588L;
 
@@ -19,8 +21,8 @@ public class UserPanel extends JPanel {
     add(new UserSelector(), BorderLayout.NORTH);
 
     JTabbedPane tabbed_pane = new JTabbedPane();
-    tabbed_pane.insertTab("Timetable", null, new JScrollPane(new Timetable()), "Timetable", 0);
-    tabbed_pane.insertTab("Map", null, new JScrollPane(new MapView()), "Map", 1);
+    tabbed_pane.insertTab("Timetable", null, new Timetable(), "Timetable", 0);
+    tabbed_pane.insertTab("Map", null, new MapView(), "Map", 1);
     add(tabbed_pane);
   }
 
@@ -37,7 +39,7 @@ public class UserPanel extends JPanel {
     graphics_2d.setPaint(new RadialGradientPaint(mouse_point, getWidth(), new float[] {0f, 0.3f, 1f},
                          new Color[] {gray, darkGray, black}));
 
-    // taken from official iPhone X dimension drawings
+    // taken from iPhone X prototype technical drawings
     double glass_height    = 139.99;
     double screen_height   = 135.75;
 

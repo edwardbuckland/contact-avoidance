@@ -3,21 +3,27 @@ package graph.bipartite;
 import static gui.admin.View.*;
 import static java.awt.Color.*;
 
+import java.util.*;
+
 import graph.Graph.*;
-import graphics.*;
+import graphics.Vector;
 
 public class Activity extends Node {
+  public static List<Activity> activities = new ArrayList<>();
+
   private String name;
 
   public double startTime;
   public double endTime;
 
   public Activity(String name, double start_time, double end_time) {
-    super(new Vector(Math.random()*10, (start_time + end_time)/2, Math.random()*3 + 3), red);
+    super(new Vector(Math.random()*15, (start_time + end_time)/2, Math.random()*10 + 20), red);
 
     this.name = name;
     startTime = start_time;
     endTime = end_time;
+
+    activities.add(this);
   }
 
   @Override

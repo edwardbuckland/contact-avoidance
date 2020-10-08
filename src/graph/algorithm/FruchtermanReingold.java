@@ -1,6 +1,7 @@
 package graph.algorithm;
 
 import static graph.Graph.*;
+import static graph.bipartite.Activity.*;
 import static java.lang.Math.*;
 
 import java.util.*;
@@ -9,7 +10,6 @@ import java.util.concurrent.atomic.*;
 import javax.swing.Timer;
 
 import graph.Graph.*;
-import graph.bipartite.*;
 import graphics.Vector;
 import gui.admin.*;
 
@@ -42,14 +42,13 @@ public class FruchtermanReingold {
         displacement.put(second, displacement.get(second).plus (scaled_delta));
       }
 
-    nodes.stream()
-         .filter(Activity.class::isInstance)
-         .filter(node -> !node.selected)
-         .forEach(node -> {
-           Vector delta = displacement.get(node);
-           delta.y = 0;
-           node.location = node.location.plus(delta);
-         });
+    activities.stream()
+              .filter(node -> !node.selected && !node.edges.isEmpty())
+              .forEach(node -> {
+                Vector delta = displacement.get(node);
+                delta.y = 0;
+                node.location = node.location.plus(delta);
+              });
 
     View.view.repaint();
   });

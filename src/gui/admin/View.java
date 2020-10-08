@@ -1,6 +1,6 @@
 package gui.admin;
 
-import static graph.Graph.*;
+import static graph.bipartite.Activity.*;
 import static graphics.Transform.*;
 import static java.awt.AlphaComposite.*;
 import static java.awt.Color.*;
@@ -226,15 +226,14 @@ public class View extends JPanel {
 
     @Override
     public void mouseMoved(MouseEvent event) {
-      Node node = nodes.stream()
-                       .filter(Activity.class::isInstance)
-                       .filter(activity -> {
-                         Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
-                         return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
-                       })
-                       .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
-                       .findFirst()
-                       .orElse(null);
+      Node node = activities.stream()
+                            .filter(activity -> {
+                              Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
+                              return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
+                            })
+                            .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
+                            .findFirst()
+                            .orElse(null);
 
       if (selectedNode != null)
         selectedNode.selected = false;
