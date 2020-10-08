@@ -24,6 +24,11 @@ public class Activity extends Node {
   public void draw() {
     super.draw();
 
-    drawText(name, location);
+    drawText(name + " (" + timeString(startTime) + " - " + timeString(endTime) + ")", location);
+  }
+
+  private String timeString(double time) {
+    return String.format("%d:%02d %s", (int)time - (time > 12? 12: 0), (int)(time%1*60), time%24 > 11? "pm": "am");
+
   }
 }

@@ -19,10 +19,10 @@ public class Person extends ArrayList<Node> implements Drawable {
   public String name;
 
   static {
-    Activity maths = new Activity("maths", 9, 12);
+    Activity maths = new Activity("maths", 9, 11);
     Activity cafe = new Activity("cafe", 12, 13);
     Activity coffee = new Activity("coffee", 12, 13);
-    Activity cake = new Activity("cake", 15, 16);
+    Activity cake = new Activity("cake", 15, 23);
 
     new Person("John", maths, cafe, cake);
     new Person("Smith", maths, coffee);

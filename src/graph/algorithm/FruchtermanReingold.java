@@ -16,7 +16,7 @@ import gui.*;
 public class FruchtermanReingold {
   public static AtomicInteger attraction = new AtomicInteger(50);
 
-  public static Timer timer = new Timer(10, event ->
+  public static Timer timer = new Timer(20, event ->
   {
     Map<Node, Vector> displacement = new HashMap<>();
     double k = sqrt(5.0/nodes.size());
@@ -44,6 +44,7 @@ public class FruchtermanReingold {
 
     nodes.stream()
          .filter(Activity.class::isInstance)
+         .filter(node -> !node.selected)
          .forEach(node -> {
            Vector delta = displacement.get(node);
            delta.y = 0;

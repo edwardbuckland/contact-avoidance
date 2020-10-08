@@ -29,6 +29,7 @@ public class Graph {
 
   public static class Node implements Drawable {
     public Vector location;
+    public boolean selected;
     private Color color;
 
     public Map<Node, Double> edges = new HashMap<>();
@@ -44,7 +45,7 @@ public class Graph {
     public void draw() {
       edges.entrySet()
            .forEach(entry -> drawArrow(location, entry.getKey().location));
-      drawPoint(location, 200, color);
+      drawPoint(location, selected? 400: 200, selected? color.brighter(): color);
     }
   }
 }

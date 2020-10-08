@@ -1,5 +1,6 @@
 package gui;
 
+import static graph.Graph.*;
 import static graphics.Transform.*;
 import static java.awt.AlphaComposite.*;
 import static java.awt.Color.*;
@@ -18,11 +19,13 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 import graph.*;
+import graph.Graph.Node;
 import graph.bipartite.*;
 import graphics.Vector;
 
 public class View extends JPanel {
   private static final long serialVersionUID = 2621550208556045621L;
+
   private static final double SPEED = 0.4;
   private static final double RESOLUTION = 20;
   private static final double ARROW_SIZE = 8;
@@ -34,6 +37,7 @@ public class View extends JPanel {
   public static View view = new View();
 
   private Vector translate = new Vector(0, 0, 0);
+  private Node selectedNode;
 
   public View() {
     setBackground(white);
@@ -175,8 +179,15 @@ public class View extends JPanel {
 
     Color color = graphics2D.getColor();
 
-    graphics2D.setColor(black);
+    graphics2D.setColor(view.getBackground());
+    graphics2D.translate(1, 1);
+    for (int i = 0, j = 1; i < 4; i += j = 1 - j) {
+      graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
+      graphics2D.translate((i - 1)%2, (i - 2)%2);
+    }
+    graphics2D.translate(-1, -1);
 
+    graphics2D.setColor(black);
     graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
 
     graphics2D.setColor(color);
@@ -214,19 +225,40 @@ public class View extends JPanel {
     }
 
     @Override
+    public void mouseMoved(MouseEvent event) {
+      Node node = nodes.stream()
+                       .filter(Activity.class::isInstance)
+                       .filter(activity -> {
+                         Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
+                         return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
+                       })
+                       .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
+                       .findFirst()
+                       .orElse(null);
+
+      if (selectedNode != null)
+        selectedNode.selected = false;
+
+      if (node != null)
+        node.selected = true;
+
+      selectedNode = node;
+    }
+
+    @Override
     public void mouseDragged(MouseEvent event) {
         rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
         previous = event.getPoint();
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
+    public void focusGained(FocusEvent event) {
       setBorder(createLineBorder(darkGray, 2));
 
     }
 
     @Override
-    public void focusLost(FocusEvent e) {
+    public void focusLost(FocusEvent event) {
       setTranslation(0, 0, 0);
       setBorder(createLineBorder(darkGray, 1));
     }
