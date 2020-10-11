@@ -5,34 +5,19 @@ import static gui.admin.View.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.*;
 
-import graph.algorithm.*;
 import graphics.Vector;
 import gui.admin.*;
 
 public class Graph {
-  public static List<Node> nodes = new ArrayList<>();
-  public static DoubleSummaryStatistics statistics;
-
-  public static void calculate() {
-    statistics = Arrays.stream(FloydWarshall.floydWarshall())
-                .flatMapToDouble(Arrays::stream)
-                .filter(Double::isFinite)
-                .boxed()
-                .collect(Collectors.summarizingDouble(Double::doubleValue));
-  }
-
-  public static double coefficient() {
-    return statistics.getAverage()/statistics.getCount()*nodes.size()*(nodes.size() - 1);
-  }
+  public static List<Node>      nodes       = new ArrayList<>();
 
   public static class Node implements Drawable {
-    public Vector location;
-    public boolean selected;
-    private Color color;
+    public Vector               location;
+    public boolean              selected;
+    private Color               color;
 
-    public Map<Node, Double> edges = new HashMap<>();
+    public Map<Node, Double>    edges       = new HashMap<>();
 
     public Node(Vector location, Color color) {
       this.location = location;

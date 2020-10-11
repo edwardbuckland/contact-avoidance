@@ -4,9 +4,9 @@ import static java.lang.Double.*;
 import static java.lang.Math.*;
 
 public class Vector {
-  public double x;
-  public double y;
-  public double z;
+  public double     x;
+  public double     y;
+  public double     z;
 
   public Vector() {
     this(POSITIVE_INFINITY, POSITIVE_INFINITY);

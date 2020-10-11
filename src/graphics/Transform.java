@@ -3,11 +3,11 @@ package graphics;
 import static java.lang.Math.*;
 
 public class Transform {
-  private static final double VIEWPORT_SIZE = 1000;
+  private static final double   VIEWPORT_SIZE   = 950;
 
-  private static double theta = 0;
-  private static double phi = 0;
-  private static Vector position = new Vector(0, 0, 100);
+  private static double         theta;
+  private static double         phi             = -PI/4;
+  private static Vector         position        = new Vector(50, 12, 50);
 
   public static Vector transform(Vector vector) {
     Vector camera = rotate(vector.mirrorY().plus(position), phi, theta);

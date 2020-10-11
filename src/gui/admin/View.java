@@ -24,20 +24,21 @@ import graph.bipartite.*;
 import graphics.Vector;
 
 public class View extends JPanel {
-  private static final long serialVersionUID = 2621550208556045621L;
+  private static final long     serialVersionUID    = 2621550208556045621L;
 
-  private static final double SPEED = 0.6;
-  private static final double RESOLUTION = 20;
-  private static final double ARROW_SIZE = 8;
+  private static final double   SPEED               = 0.6;
+  private static final double   RESOLUTION          = 20;
+  private static final double   ARROW_SIZE          = 8;
 
-  private static final int CUBE = 100;
+  private static final int      CUBE                = 90;
 
-  private static Graphics2D graphics2D;
+  private static Graphics2D     graphics2D;
 
-  public static View view = new View();
+  public static View            view                = new View();
+  public static boolean         drawAccessories     = true;
 
-  private Vector translate = new Vector(0, 0, 0);
-  private Node selectedNode;
+  private Vector                translate           = new Vector(0, 0, 0);
+  private Node                  selectedNode;
 
   public View() {
     setBackground(white);
@@ -107,12 +108,16 @@ public class View extends JPanel {
       }
 
 
+    if (View.drawAccessories) {
     graphics2D.setColor(lightGray);
     Person.people.forEach(Drawable::draw);
+    }
 
     graphics2D.setStroke(new BasicStroke(1.5f));
     graphics2D.setColor(black);
-    Graph.nodes.forEach(Drawable::draw);
+    Graph.nodes.stream()
+               .filter(node -> !(node instanceof Activity && node.edges.isEmpty()))
+               .forEach(Drawable::draw);
 
     graphics2D.setTransform(transform);
     graphics2D = null;

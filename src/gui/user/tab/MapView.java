@@ -11,18 +11,21 @@ import javax.imageio.*;
 import javax.swing.*;
 
 public class MapView extends UserTab {
-  private static final long serialVersionUID = 5304720443805548092L;
+  private static final long     serialVersionUID    = 5304720443805548092L;
 
-  private double scale = 0.2;
+  private double                scale               = 0.2;
 
-  BufferedImage mapImage;
-  Image scaledMapImage;
+  private BufferedImage         mapImage;
+  private Image                 scaledMapImage;
 
   public MapView() {
+    super(new FlowLayout());
+
     try {
       mapImage = ImageIO.read(getClass().getResource("/parkville-campus-map.png"));
       scaleImage();
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
     }
 

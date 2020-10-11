@@ -1,6 +1,7 @@
 package gui.user.tab;
 
 import static graph.bipartite.Activity.*;
+import static java.awt.GridBagConstraints.*;
 import static javax.swing.JOptionPane.*;
 
 import java.awt.*;
@@ -12,26 +13,38 @@ import graph.bipartite.*;
 import gui.user.*;
 
 public class Timetable extends UserTab {
-  private static final long serialVersionUID = 1432849598520383947L;
+  private static final long     serialVersionUID    = 1432849598520383947L;
 
-  private static final int HEIGHT = 1500;
-  private static final int MARGIN = 10;
-  private static final int LEFT_MARGIN = 45;
-  private static final int SPACING = 5;
+  private static final int      HEIGHT              = 1500;
+  private static final int      SPACING             = 8;
+  private static final int      LEFT_MARGIN         = 45;
 
-  private Person person;
+  private JComboBox<Activity>   candidateActivities = new JComboBox<>();
+  private JButton               registerButton      = new JButton("+");
 
-  private JComboBox<Activity> candidate_activities = new JComboBox<>();
+  private Person                person;
 
   public Timetable() {
-    header.add(candidate_activities);
+    super(new GridBagLayout());
 
-    JButton register_button = new JButton("+");
-    register_button.addActionListener(event -> {
-      person.addActivities((Activity)candidate_activities.getSelectedItem());
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = HORIZONTAL;
+    constraints.weightx = 1;
+    constraints.gridwidth = REMAINDER;
+
+    header.add(new JTextField(), constraints);
+
+    constraints.gridwidth = RELATIVE;
+
+    header.add(candidateActivities, constraints);
+
+    constraints.weightx = 0;
+
+    registerButton.addActionListener(event -> {
+      person.addActivities((Activity)candidateActivities.getSelectedItem());
       buildTimetable();
     });
-    header.add(register_button);
+    header.add(registerButton, constraints);
   }
 
   @Override
@@ -61,17 +74,19 @@ public class Timetable extends UserTab {
     (person = UserSelector.currentUser).activities()
                                        .forEach(ActivityButton::new);
 
-    candidate_activities.removeAllItems();
+    candidateActivities.removeAllItems();
 
     activities.stream()
               .filter(candidate -> person.activities()
                                          .noneMatch(registered -> registered.startTime < candidate.endTime &&
                                                                   registered.endTime > candidate.startTime))
-              .forEach(candidate_activities::addItem);
+              .forEach(candidateActivities::addItem);
+
+    registerButton.setEnabled(candidateActivities.getSelectedIndex() != -1);
   }
 
   private int timeToY(double time) {
-    return (int)(MARGIN + (HEIGHT - 2*MARGIN)*time/24.0);
+    return (int)(SPACING + (HEIGHT - 2*SPACING)*time/24.0);
   }
 
   private class ActivityButton extends JButton implements FocusListener {

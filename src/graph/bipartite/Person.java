@@ -13,15 +13,15 @@ import graphics.Vector;
 import gui.admin.*;
 
 public class Person extends ArrayList<Node> implements Drawable {
-  private static final long serialVersionUID = -3796609626176481425L;
+  private static final long     serialVersionUID    = -3796609626176481425L;
 
-  public static List<Person> people = new ArrayList<>();
-  private static int uniqueIndex;
+  public static List<Person>    people              = new ArrayList<>();
+  private static int            uniqueIndex;
 
-  public int index = uniqueIndex++;
-  public String name;
+  public int                    index               = uniqueIndex++;
+  public String                 name;
 
-  private List<Activity> activities = new ArrayList<>();
+  private List<Activity>        activities          = new ArrayList<>();
 
   static {
     Activity coffee1 = new Activity("coffee", 8, 9);
@@ -45,7 +45,7 @@ public class Person extends ArrayList<Node> implements Drawable {
   }
 
   private Vector timePoint(double t) {
-    return new Vector(index*6, t, 0);
+    return new Vector((index + 1)/2*6*signum(index%2 - 0.5), t, 0);
   }
 
   @Override

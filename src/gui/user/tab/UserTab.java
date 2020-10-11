@@ -5,16 +5,16 @@ import java.awt.*;
 import javax.swing.*;
 
 public abstract class UserTab extends JPanel {
-  private static final long serialVersionUID = -5757796270446851981L;
+  private static final long     serialVersionUID    = -5757796270446851981L;
 
-  protected JPanel header = new JPanel(null);
-  private UserTabPanel panel = new UserTabPanel();
-  private JScrollPane scrollPane = new JScrollPane(panel);
+  protected JPanel              header              = new JPanel();
+  private UserTabPanel          panel               = new UserTabPanel();
+  private JScrollPane           scrollPane          = new JScrollPane(panel);
 
-  protected UserTab() {
+  protected UserTab(LayoutManager manager) {
     super(new BorderLayout());
 
-    header.setLayout(new BoxLayout(header, BoxLayout.LINE_AXIS));
+    header.setLayout(manager);
     add(header, BorderLayout.NORTH);
 
     add(scrollPane, BorderLayout.CENTER);

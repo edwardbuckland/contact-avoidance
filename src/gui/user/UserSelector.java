@@ -8,12 +8,12 @@ import javax.swing.*;
 import graph.bipartite.*;
 
 public class UserSelector extends JPanel {
-  private static final long serialVersionUID = -1812097228826180716L;
+  private static final long     serialVersionUID    = -1812097228826180716L;
 
-  public static Person currentUser;
+  public static Person          currentUser;
 
-  private JLabel label = new JLabel();
-  private JButton button = new JButton();
+  private JLabel                label               = new JLabel();
+  private JButton               button              = new JButton();
 
   public UserSelector() {
     super(new BorderLayout());

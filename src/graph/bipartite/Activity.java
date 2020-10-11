@@ -7,17 +7,18 @@ import java.util.*;
 
 import graph.Graph.*;
 import graphics.Vector;
+import gui.admin.*;
 
 public class Activity extends Node {
-  public static List<Activity> activities = new ArrayList<>();
+  public static List<Activity>  activities  = new ArrayList<>();
 
-  private String name;
+  private String                name;
 
-  public double startTime;
-  public double endTime;
+  public double                 startTime;
+  public double                 endTime;
 
   public Activity(String name, double start_time, double end_time) {
-    super(new Vector(Math.random()*15, (start_time + end_time)/2, Math.random()*10 + 20), red);
+    super(new Vector(0, (start_time + end_time)/2, 0), red);
 
     this.name = name;
     startTime = start_time;
@@ -30,7 +31,8 @@ public class Activity extends Node {
   public void draw() {
     super.draw();
 
-    drawText(toString(), location);
+    if (View.drawAccessories)
+      drawText(toString(), location);
   }
 
   @Override

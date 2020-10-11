@@ -13,7 +13,7 @@ import javax.swing.*;
 import gui.user.tab.*;
 
 public class UserPanel extends JPanel {
-  private static final long serialVersionUID = 8753354135329406588L;
+  private static final long     serialVersionUID    = 8753354135329406588L;
 
   public UserPanel() {
     super(new BorderLayout());

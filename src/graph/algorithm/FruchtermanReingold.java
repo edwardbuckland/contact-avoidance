@@ -6,6 +6,7 @@ import static java.lang.Math.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.*;
+import java.util.function.*;
 
 import javax.swing.Timer;
 
@@ -14,32 +15,32 @@ import graphics.Vector;
 import gui.admin.*;
 
 public class FruchtermanReingold {
-  public static AtomicInteger attraction = new AtomicInteger(50);
+  public static AtomicInteger   attraction  = new AtomicInteger(50);
 
-  public static Timer timer = new Timer(20, event ->
+  public static Timer           timer       = new Timer(20, event ->
   {
     Map<Node, Vector> displacement = new HashMap<>();
-    double k = sqrt(5.0/nodes.size());
+    BiConsumer<Node, Vector> displace = (node, delta) -> displacement.put(node, displacement.get(node).plus(delta));
 
     // repel pairs
     for (Node first: nodes) {
-      displacement.put(first, new Vector(0, 0, 0));
+      displacement.put(first, new Vector(random()*1e-4, 0, random()*1e-4));
 
-      for (Node second: nodes) {
-        if (first != second) {
-          Vector delta = first.location.minus(second.location);
-          displacement.put(first, displacement.get(first).plus(delta.unit().times(k*k/(delta.norm() + 1e-4))));
-        }
-      }
+      nodes.stream()
+           .filter(second -> !second.edges.isEmpty() && second.location.minus(first.location).norm() > 1e-4)
+           .forEach(second -> {
+             Vector delta = first.location.minus(second.location);
+             displace.accept(first, delta.unit().times(min(1/delta.norm()/attractionRatio(), 0.1)));
+           });
     }
 
     // attract along edges
     for (Node first: nodes)
       for (Node second: first.edges.keySet()) {
         Vector delta = first.location.minus(second.location);
-        Vector scaled_delta = delta.times(delta.norm()/k*pow(attraction.get()/100.0, 3)/100.0);
-        displacement.put(first,  displacement.get(first ).minus(scaled_delta));
-        displacement.put(second, displacement.get(second).plus (scaled_delta));
+        Vector scaled_delta = delta.times(min(delta.norm()*attractionRatio(), 0.1));
+        displace.accept(first,  scaled_delta.times(-1));
+        displace.accept(second, scaled_delta);
       }
 
     activities.stream()
@@ -47,9 +48,13 @@ public class FruchtermanReingold {
               .forEach(node -> {
                 Vector delta = displacement.get(node);
                 delta.y = 0;
-                node.location = node.location.plus(delta);
+                node.location = node.location.plus(delta.times(2));
               });
 
     View.view.repaint();
   });
+
+  private static double attractionRatio() {
+    return pow(attraction.get()/50.0, 10)/80*sqrt(nodes.size()) + 1e-5;
+  }
 }
