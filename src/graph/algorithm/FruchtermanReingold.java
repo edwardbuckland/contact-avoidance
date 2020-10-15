@@ -1,6 +1,6 @@
 package graph.algorithm;
 
-import static graph.Graph.*;
+import static graph.Node.*;
 import static graph.bipartite.Activity.*;
 import static java.lang.Math.*;
 
@@ -10,7 +10,7 @@ import java.util.function.*;
 
 import javax.swing.Timer;
 
-import graph.Graph.*;
+import graph.*;
 import graphics.Vector;
 import gui.admin.*;
 
@@ -51,7 +51,7 @@ public class FruchtermanReingold {
                 node.location = node.location.plus(delta.times(2));
               });
 
-    View.view.repaint();
+    GraphView.view.repaint();
   });
 
   private static double attractionRatio() {

@@ -1,24 +1,40 @@
 package graph.bipartite;
 
-import static gui.admin.View.*;
+import static graph.bipartite.Activity.ActivityStatus.*;
+import static gui.admin.GraphView.*;
 import static java.awt.Color.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
-import graph.Graph.*;
+import graph.*;
 import graphics.Vector;
 import gui.admin.*;
 
 public class Activity extends Node {
-  public static List<Activity>  activities  = new ArrayList<>();
+  public static List<Activity>  activities      = new ArrayList<>();
 
-  private String                name;
+  protected enum ActivityStatus {
+    PENDING_APPROVAL    (orange),
+    APPROVED            (green ),
+    REJECTED            (red   );
+
+    public Color                color;
+
+    private ActivityStatus(Color color) {
+      this.color = color;
+    }
+  }
+
+  public ActivityStatus         status          = PENDING_APPROVAL;
+  public String                 name;
 
   public double                 startTime;
   public double                 endTime;
 
   public Activity(String name, double start_time, double end_time) {
-    super(new Vector(0, (start_time + end_time)/2, 0), red);
+    super(new Vector(0, (start_time + end_time)/2, 0));
 
     this.name = name;
     startTime = start_time;
@@ -27,11 +43,24 @@ public class Activity extends Node {
     activities.add(this);
   }
 
+  public void approve() {
+    status = APPROVED;
+  }
+
+  public void reject() {
+    status = REJECTED;
+  }
+
+  @Override
+  public Color color() {
+    return status.color;
+  }
+
   @Override
   public void draw() {
     super.draw();
 
-    if (View.drawAccessories)
+    if (GraphView.drawAccessories)
       drawText(toString(), location);
   }
 

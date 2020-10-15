@@ -35,6 +35,10 @@ public abstract class UserTab extends JPanel {
            scrollPane.getInsets().left - scrollPane.getInsets().right;
   }
 
+  protected JScrollBar[] scrollBars() {
+    return new JScrollBar[] {scrollPane.getHorizontalScrollBar(), scrollPane.getVerticalScrollBar()};
+  }
+
   protected abstract int panelHeight();
 
   protected abstract void paintPanel(Graphics2D graphics_2d);

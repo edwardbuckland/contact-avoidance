@@ -95,8 +95,6 @@ public class Timetable extends UserTab {
     private Activity activity;
 
     private ActivityButton(Activity activity) {
-      super(activity.toString());
-
       this.activity = activity;
 
       setBounds(LEFT_MARGIN + SPACING, timeToY(activity.startTime), panelWidth() -
@@ -113,6 +111,20 @@ public class Timetable extends UserTab {
       });
 
       Timetable.this.add(this);
+    }
+
+    @Override
+    protected void paintComponent(Graphics graphics) {
+      super.paintComponent(graphics);
+
+      if (activity != null)
+      {
+        if (!getText().equals(activity.toString()))
+          setText(activity.toString());
+
+        graphics.setColor(activity.color());
+        graphics.fillOval(SPACING, SPACING, SPACING, SPACING);
+      }
     }
 
     @Override

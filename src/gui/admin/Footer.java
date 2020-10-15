@@ -31,7 +31,7 @@ public class Footer extends JPanel {
 
     JCheckBox draw_labels = new JCheckBox("Draw accessories", true);
     draw_labels.addActionListener(event -> {
-      View.drawAccessories = draw_labels.isSelected();
+      GraphView.drawAccessories = draw_labels.isSelected();
       repaint();
     });
     add(draw_labels);

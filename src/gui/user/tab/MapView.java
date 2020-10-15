@@ -1,33 +1,33 @@
 package gui.user.tab;
 
 import static java.awt.RenderingHints.*;
-import static java.lang.Math.*;
 
 import java.awt.*;
 import java.awt.image.*;
-import java.io.*;
+import java.util.*;
 
 import javax.imageio.*;
 import javax.swing.*;
 
 public class MapView extends UserTab {
-  private static final long     serialVersionUID    = 5304720443805548092L;
+  private static final long             serialVersionUID        = 5304720443805548092L;
 
-  private double                scale               = 0.2;
+  private static final int              PERCENTAGE_INCREMENT    = 10;
 
-  private BufferedImage         mapImage;
-  private Image                 scaledMapImage;
+  private int                           percentage;
+
+  private Map<Integer, BufferedImage>   images                  = new HashMap<>();
 
   public MapView() {
     super(new FlowLayout());
 
-    try {
-      mapImage = ImageIO.read(getClass().getResource("/parkville-campus-map.png"));
-      scaleImage();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
+    for (percentage = 100;; percentage -= PERCENTAGE_INCREMENT)
+      try {
+        images.put(percentage, ImageIO.read(getClass().getResource("/parkville-campus-map" + percentage + ".png")));
+      } catch (Exception e) {
+        percentage += 10;
+        break;
+      }
 
     header.add(new ZoomButton(true));
     header.add(new ZoomButton(false));
@@ -35,24 +35,19 @@ public class MapView extends UserTab {
 
   @Override
   protected int panelWidth() {
-    return (int)(scale*mapImage.getWidth());
+    return images.get(percentage).getWidth();
   }
 
   @Override
   protected int panelHeight() {
-    return (int)(scale*mapImage.getHeight());
-  }
-
-  private void scaleImage() {
-    scaledMapImage = mapImage.getScaledInstance(panelWidth(), panelHeight(), BufferedImage.SCALE_SMOOTH);
-    repaint();
+    return images.get(percentage).getHeight();
   }
 
   @Override
   protected void paintPanel(Graphics2D graphics_2d) {
     graphics_2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
-    graphics_2d.drawImage(scaledMapImage, 0, 0, panelWidth(), panelHeight(), null);
+    graphics_2d.drawImage(images.get(percentage), 0, 0, panelWidth(), panelHeight(), null);
   }
 
   private class ZoomButton extends JButton {
@@ -62,8 +57,16 @@ public class MapView extends UserTab {
       super(zoom_in? "+": "-");
 
       addActionListener(event -> {
-        scale = min(1, max(0.1, scale + (zoom_in? 1: -1)*0.1));
-        scaleImage();
+        int new_percentage = percentage + (zoom_in? 1: -1)*PERCENTAGE_INCREMENT;
+
+        if (images.containsKey(new_percentage))
+          SwingUtilities.invokeLater(() -> {
+          for (int i = 0; i < 2; i++)
+            scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
+
+          percentage = new_percentage;
+          MapView.this.revalidate();
+          });
       });
     }
 

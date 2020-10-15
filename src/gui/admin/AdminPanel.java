@@ -10,7 +10,7 @@ public class AdminPanel extends JPanel {
   public AdminPanel() {
     super(new BorderLayout());
 
-    add(View.view);
+    add(GraphView.view);
 
     add(new Footer(), BorderLayout.SOUTH);
   }

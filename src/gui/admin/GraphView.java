@@ -1,5 +1,6 @@
 package gui.admin;
 
+import static graph.Node.*;
 import static graph.bipartite.Activity.*;
 import static graphics.Transform.*;
 import static java.awt.AlphaComposite.*;
@@ -10,6 +11,7 @@ import static javax.swing.BorderFactory.*;
 import static javax.swing.KeyStroke.*;
 
 import java.awt.*;
+import java.awt.Dialog.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
@@ -18,12 +20,10 @@ import java.util.stream.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
-import graph.*;
-import graph.Graph.Node;
 import graph.bipartite.*;
 import graphics.Vector;
 
-public class View extends JPanel {
+public class GraphView extends JPanel {
   private static final long     serialVersionUID    = 2621550208556045621L;
 
   private static final double   SPEED               = 0.6;
@@ -34,13 +34,13 @@ public class View extends JPanel {
 
   private static Graphics2D     graphics2D;
 
-  public static View            view                = new View();
+  public static GraphView            view                = new GraphView();
   public static boolean         drawAccessories     = true;
 
   private Vector                translate           = new Vector(0, 0, 0);
-  private Node                  selectedNode;
+  private Activity              selectedActivity;
 
-  public View() {
+  public GraphView() {
     setBackground(white);
     setFocusable(true);
 
@@ -108,16 +108,16 @@ public class View extends JPanel {
       }
 
 
-    if (View.drawAccessories) {
-    graphics2D.setColor(lightGray);
-    Person.people.forEach(Drawable::draw);
+    if (GraphView.drawAccessories) {
+      graphics2D.setColor(lightGray);
+      Person.people.forEach(Drawable::draw);
     }
 
     graphics2D.setStroke(new BasicStroke(1.5f));
     graphics2D.setColor(black);
-    Graph.nodes.stream()
-               .filter(node -> !(node instanceof Activity && node.edges.isEmpty()))
-               .forEach(Drawable::draw);
+    nodes.stream()
+         .filter(node -> !(node instanceof Activity && node.edges.isEmpty()))
+         .forEach(Drawable::draw);
 
     graphics2D.setTransform(transform);
     graphics2D = null;
@@ -231,34 +231,45 @@ public class View extends JPanel {
 
     @Override
     public void mouseMoved(MouseEvent event) {
-      Node node = activities.stream()
-                            .filter(activity -> {
-                              Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
-                              return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
-                            })
-                            .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
-                            .findFirst()
-                            .orElse(null);
+      Activity selected_activity = activities.stream()
+                                             .filter(activity -> {
+                                               Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
+                                               return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
+                                             })
+                                             .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
+                                             .findFirst()
+                                             .orElse(null);
 
-      if (selectedNode != null)
-        selectedNode.selected = false;
+      if (selectedActivity != null)
+        selectedActivity.selected = false;
 
-      if (node != null)
-        node.selected = true;
+      if (selected_activity != null)
+        selected_activity.selected = true;
 
-      selectedNode = node;
+      selectedActivity = selected_activity;
     }
 
     @Override
     public void mouseDragged(MouseEvent event) {
-        rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
-        previous = event.getPoint();
+      rotate((previous.y - event.getY())/1000.0, (event.getX() - previous.x)/1000.0);
+      previous = event.getPoint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent event) {
+      if (selectedActivity != null)
+      {
+        JDialog dialog = new JDialog(SwingUtilities.windowForComponent(GraphView.this), "Manage Activity", ModalityType.APPLICATION_MODAL);
+        dialog.setLocationRelativeTo(GraphView.this);
+        dialog.setContentPane(new ActivityView(selectedActivity));
+        dialog.pack();
+        dialog.setVisible(true);
+      }
     }
 
     @Override
     public void focusGained(FocusEvent event) {
       setBorder(createLineBorder(darkGray, 2));
-
     }
 
     @Override

@@ -1,14 +1,13 @@
 package graph.bipartite;
 
-import static gui.admin.View.*;
-import static java.awt.Color.*;
+import static graph.Node.*;
+import static gui.admin.GraphView.*;
 import static java.lang.Math.*;
 
 import java.util.*;
 import java.util.stream.*;
 
-import graph.*;
-import graph.Graph.Node;
+import graph.Node;
 import graphics.Vector;
 import gui.admin.*;
 
@@ -80,25 +79,25 @@ public class Person extends ArrayList<Node> implements Drawable {
             .flatMap(Set::stream)
             .forEach(node -> forEach(node.edges::remove));
 
-    forEach(Graph.nodes::remove);
+    forEach(nodes::remove);
 
     clear();
 
     if (!activities.isEmpty()) {
       activities.sort((first, second) -> (int)signum(first.endTime - second.endTime));
 
-      Node node = new Node(timePoint(0), green);
+      Node node = new PersonNode(timePoint(0), this);
       node.edges.put(activities.get(0), 1.0);
       add(node);
 
       for (int i = 0; i < activities.size() - 1; i++) {
-        node = new Node(timePoint((activities.get(i).endTime + activities.get(i + 1).startTime)/2), green);
+        node = new PersonNode(timePoint((activities.get(i).endTime + activities.get(i + 1).startTime)/2), this);
         activities.get(i).edges.put(node, 1.0);
         node.edges.put(activities.get(i + 1), 1.0);
         add(node);
       }
 
-      node = new Node(timePoint(24), green);
+      node = new PersonNode(timePoint(24), this);
       activities.get(activities.size() - 1).edges.put(node, 1.0);
       add(node);
     }
