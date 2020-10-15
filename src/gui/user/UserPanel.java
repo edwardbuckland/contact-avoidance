@@ -11,6 +11,7 @@ import java.awt.geom.Arc2D.Double;
 import javax.swing.*;
 
 import gui.user.tab.*;
+import gui.user.tab.map.*;
 
 public class UserPanel extends JPanel {
   private static final long     serialVersionUID    = 8753354135329406588L;

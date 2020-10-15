@@ -1,4 +1,4 @@
-package gui.user.tab;
+package gui.user.tab.map;
 
 import static java.awt.RenderingHints.*;
 
@@ -8,6 +8,8 @@ import java.util.*;
 
 import javax.imageio.*;
 import javax.swing.*;
+
+import gui.user.tab.*;
 
 public class MapView extends UserTab {
   private static final long             serialVersionUID        = 5304720443805548092L;

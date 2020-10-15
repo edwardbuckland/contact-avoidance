@@ -22,6 +22,7 @@ import javax.swing.Timer;
 
 import graph.bipartite.*;
 import graphics.Vector;
+import gui.admin.activity.*;
 
 public class GraphView extends JPanel {
   private static final long     serialVersionUID    = 2621550208556045621L;
@@ -260,9 +261,10 @@ public class GraphView extends JPanel {
       if (selectedActivity != null)
       {
         JDialog dialog = new JDialog(SwingUtilities.windowForComponent(GraphView.this), "Manage Activity", ModalityType.APPLICATION_MODAL);
-        dialog.setLocationRelativeTo(GraphView.this);
+        dialog.setMinimumSize(new Dimension(800, 500));
         dialog.setContentPane(new ActivityView(selectedActivity));
         dialog.pack();
+        dialog.setLocationRelativeTo(GraphView.this);
         dialog.setVisible(true);
       }
     }
