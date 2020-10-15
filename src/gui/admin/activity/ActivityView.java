@@ -4,6 +4,7 @@ import static graph.bipartite.Activity.*;
 import static java.awt.GridBagConstraints.*;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -31,8 +32,12 @@ public class ActivityView extends JPanel {
     return constraints;
   }
 
+  private Activity                          activity;
+
   public ActivityView(Activity activity) {
     super(new GridBagLayout());
+
+    this.activity = activity;
 
     add(new JLabel(activity.name, JLabel.CENTER),                   DOUBLE_COLUMN);
     add(new JSeparator(),                                           DOUBLE_COLUMN);
@@ -55,11 +60,8 @@ public class ActivityView extends JPanel {
     table_pane.setPreferredSize(new Dimension(0, 0));
     add(table_pane,                                                 columnConstraints(0, 2, 1));
 
-    JButton random_split = new JButton("Random split");
-    add(random_split,                                               DOUBLE_COLUMN);
-
-    JButton clustered_split = new JButton("Clustered split");
-    add(clustered_split,                                            DOUBLE_COLUMN);
+    add(new SplitButton("Random", activity::randomSplit),           DOUBLE_COLUMN);
+    add(new SplitButton("Clustered", activity::clusteredSplit),     DOUBLE_COLUMN);
 
     GridBagConstraints big_constraint = columnConstraints(2, 1, 1);
 
@@ -67,6 +69,39 @@ public class ActivityView extends JPanel {
     big_constraint.gridheight = REMAINDER;
     big_constraint.weightx    = 1;
 
-    add(new JButton(" "), big_constraint);
+    add(new SimilarityMatrixPanel(activity.similarityMatrix()), big_constraint);
+
+    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
+    getActionMap().put("dispose", new AbstractAction() {
+      private static final long             serialVersionUID        = -6359204723151660L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        dispose();
+      }
+    });
+  }
+
+  private void dispose() {
+    ((JDialog)SwingUtilities.getRoot(this)).dispose();
+  }
+
+  private class SplitButton extends JButton {
+    private static final long               serialVersionUID        = -4875816072232181047L;
+
+    private SplitButton(String text, Runnable action) {
+      super(text + " split");
+
+      addActionListener(event -> {
+        action.run();
+        dispose();
+      });
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+      setEnabled(!activity.locations.isEmpty());
+      super.paintComponent(g);
+    }
   }
 }

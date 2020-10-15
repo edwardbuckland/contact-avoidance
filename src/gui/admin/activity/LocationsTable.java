@@ -1,5 +1,6 @@
 package gui.admin.activity;
 
+import static graph.bipartite.Activity.ActivityStatus.*;
 import static java.util.Arrays.*;
 
 import java.awt.*;
@@ -21,27 +22,31 @@ public class LocationsTable extends JTable {
   public LocationsTable(Activity activity) {
     this.activity = activity;
 
-    DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
-    editor.setClickCountToStart(1);
-
     BuildingsTableModel model = new BuildingsTableModel();
     setModel(model);
-    setDefaultEditor(Object.class, editor);
-    setDefaultRenderer(Object.class, new BuildingsRenderer());
-    getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "delete");
-    getActionMap().put("delete", new AbstractAction() {
-      private static final long         serialVersionUID        = -8243629630787622182L;
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int index = getSelectedRow();
+    if (activity.status == PENDING_APPROVAL) {
+      DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
+      editor.setClickCountToStart(1);
 
-        if (index != -1) {
-          model.removeRow(index);
-          activity.locations.remove(index);
+      setDefaultEditor(Object.class, editor);
+      setDefaultRenderer(Object.class, new BuildingsRenderer());
+      getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "delete");
+      getActionMap().put("delete", new AbstractAction() {
+        private static final long         serialVersionUID        = -8243629630787622182L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          int index = getSelectedRow();
+
+          if (index != -1) {
+            model.removeRow(index);
+            activity.locations.remove(index);
+            getParent().getParent().getParent().repaint();
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   private class BuildingsTableModel extends DefaultTableModel {
@@ -59,7 +64,7 @@ public class LocationsTable extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-      return row == getRowCount() - 1;
+      return activity.status == PENDING_APPROVAL && row == getRowCount() - 1;
     }
 
     @Override
@@ -70,6 +75,7 @@ public class LocationsTable extends JTable {
           activity.locations.add(building);
           super.setValueAt(building, row, column);
           addRow(new Object[0]);
+          getParent().getParent().getParent().repaint();
         }
         catch (Exception e) {
           JOptionPane.showMessageDialog(getRootPane(), "Building \"" + value + "\" could not be found.");

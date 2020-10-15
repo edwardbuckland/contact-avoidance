@@ -5,6 +5,7 @@ import static gui.admin.GraphView.*;
 import static java.lang.Math.*;
 
 import java.util.*;
+import java.util.function.*;
 import java.util.stream.*;
 
 import graph.Node;
@@ -101,5 +102,16 @@ public class Person extends ArrayList<Node> implements Drawable {
       activities.get(activities.size() - 1).edges.put(node, 1.0);
       add(node);
     }
+  }
+
+  public double similarity(Person person) {
+    Function<Stream<Activity>, Double> duration = stream ->
+      stream.mapToDouble(activity -> activity.endTime - activity.startTime)
+                                                                .sum();
+
+    double shared = duration.apply(activities.stream()
+                                             .filter(person.activities::contains));
+
+    return shared/(duration.apply(Stream.concat(activities.stream(), person.activities.stream())) - shared);
   }
 }

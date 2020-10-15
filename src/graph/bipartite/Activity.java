@@ -7,8 +7,10 @@ import static java.awt.Color.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.*;
 
-import graph.*;
+import graph.Node;
+import graph.algorithm.*;
 import graphics.Vector;
 import gui.admin.*;
 import gui.user.tab.map.*;
@@ -81,5 +83,50 @@ public class Activity extends Node {
   @Override
   public String toString() {
     return name + " (" + timeString(startTime, true) + " - " + timeString(endTime, true) + ")";
+  }
+
+  private Stream<Person> people() {
+    return edges.keySet()
+                .stream()
+                .map(PersonNode.class::cast)
+                .map(node -> node.person);
+  }
+
+  public double[][] similarityMatrix() {
+    int n = edges.size();
+    double[][] matrix = new double[n][n];
+    Person[] people = people().toArray(Person[]::new);
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+        matrix[i][j] = people[i].similarity(people[j]);
+
+    return matrix;
+  }
+
+  public void randomSplit() {
+    List<Activity> derived_activities = new ArrayList<>();
+
+    for (int i = 0; i < locations.size(); i++) {
+      Activity activity = new Activity(name + " " + i, startTime, endTime);
+      activity.locations.add(locations.get(i));
+      activity.approve();
+      derived_activities.add(activity);
+    }
+
+    List<Person> people = people().collect(Collectors.toList());
+    Collections.shuffle(people);
+
+    for (int i = 0; i < people.size(); i++) {
+      people.get(i).removeActivity(this);
+      people.get(i).addActivities(derived_activities.get(i%derived_activities.size()));
+    }
+
+    activities.remove(this);
+    nodes.remove(this);
+  }
+
+  public void clusteredSplit() {
+    SpectralCluster.spectralCluster(similarityMatrix());
   }
 }

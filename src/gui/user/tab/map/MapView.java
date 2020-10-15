@@ -1,8 +1,11 @@
 package gui.user.tab.map;
 
+import static graph.bipartite.Activity.ActivityStatus.*;
+import static gui.user.UserSelector.*;
 import static java.awt.RenderingHints.*;
 
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 import java.util.*;
 
@@ -15,6 +18,7 @@ public class MapView extends UserTab {
   private static final long             serialVersionUID        = 5304720443805548092L;
 
   private static final int              PERCENTAGE_INCREMENT    = 10;
+  private static final int              MARKER_SIZE             = 10;
 
   private int                           percentage;
 
@@ -50,6 +54,18 @@ public class MapView extends UserTab {
     graphics_2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
     graphics_2d.drawImage(images.get(percentage), 0, 0, panelWidth(), panelHeight(), null);
+
+    currentUser.activities()
+               .filter(activity -> activity.status == APPROVED)
+               .forEach(activity -> {
+                 Shape marker = new Ellipse2D.Double((int)(activity.locations.get(0).longtitude*panelWidth()) - MARKER_SIZE/2,
+                                                     (int)(activity.locations.get(0).latitude*panelHeight())  - MARKER_SIZE/2,
+                                                     MARKER_SIZE, MARKER_SIZE);
+                 graphics_2d.setColor(Color.red);
+                 graphics_2d.fill(marker);
+                 graphics_2d.setColor(Color.black);
+                 graphics_2d.draw(marker);
+               });
   }
 
   private class ZoomButton extends JButton {
@@ -63,11 +79,11 @@ public class MapView extends UserTab {
 
         if (images.containsKey(new_percentage))
           SwingUtilities.invokeLater(() -> {
-          for (int i = 0; i < 2; i++)
-            scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
+            for (int i = 0; i < 2; i++)
+              scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
 
-          percentage = new_percentage;
-          MapView.this.revalidate();
+            percentage = new_percentage;
+            MapView.this.revalidate();
           });
       });
     }
