@@ -1,6 +1,7 @@
 package gui.user.tab;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -23,6 +24,11 @@ public abstract class UserTab extends JPanel {
   @Override
   public Component add(Component comp) {
     return panel.add(comp);
+  }
+
+  @Override
+  public synchronized void addMouseMotionListener(MouseMotionListener listener) {
+    panel.addMouseMotionListener(listener);
   }
 
   @Override

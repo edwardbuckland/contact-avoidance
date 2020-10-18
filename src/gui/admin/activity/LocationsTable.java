@@ -1,6 +1,5 @@
 package gui.admin.activity;
 
-import static graph.bipartite.Activity.ActivityStatus.*;
 import static java.util.Arrays.*;
 
 import java.awt.*;
@@ -25,7 +24,7 @@ public class LocationsTable extends JTable {
     BuildingsTableModel model = new BuildingsTableModel();
     setModel(model);
 
-    if (activity.status == PENDING_APPROVAL) {
+    if (activity.pending()) {
       DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
       editor.setClickCountToStart(1);
 
@@ -64,7 +63,7 @@ public class LocationsTable extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-      return activity.status == PENDING_APPROVAL && row == getRowCount() - 1;
+      return activity.pending() && row == getRowCount() - 1;
     }
 
     @Override

@@ -16,14 +16,18 @@ import gui.admin.*;
 import gui.user.tab.map.*;
 
 public class Activity extends Node {
-  public static List<Activity>  activities      = new ArrayList<>();
+  public static List<Activity>  activities          = new ArrayList<>();
+
+  public static Activity selectedActivity() {
+    return selectedNode instanceof Activity? (Activity)selectedNode: null;
+  }
 
   public static String timeString(double time, boolean minutes) {
     return (int)((time + 11)%12 + 1) + (minutes? String.format(":%02d", (int)(time%1*60)): "")
               + " " + (time%24 > 11? "pm": "am");
   }
 
-  public enum ActivityStatus {
+  protected enum ActivityStatus {
     PENDING_APPROVAL    (orange),
     APPROVED            (green ),
     REJECTED            (red   );
@@ -41,13 +45,13 @@ public class Activity extends Node {
     }
   }
 
-  public ActivityStatus         status          = PENDING_APPROVAL;
+  private ActivityStatus        status              = PENDING_APPROVAL;
   public String                 name;
 
   public double                 startTime;
   public double                 endTime;
 
-  public List<Building>         locations       = new ArrayList<>();
+  public List<Building>         locations           = new ArrayList<>();
 
   public Activity(String name, double start_time, double end_time) {
     super(new Vector(0, (start_time + end_time)/2, 0));
@@ -65,6 +69,22 @@ public class Activity extends Node {
 
   public void reject() {
     status = REJECTED;
+  }
+
+  public String status() {
+    return status.toString();
+  }
+
+  public boolean approved() {
+    return status == APPROVED;
+  }
+
+  public boolean pending() {
+    return status == PENDING_APPROVAL;
+  }
+
+  public boolean selected() {
+    return selected;
   }
 
   @Override

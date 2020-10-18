@@ -36,6 +36,7 @@ public class Person extends ArrayList<Node> implements Drawable {
 
     new Person("John Citizen").addActivities(coffee1, computing, physics, bar);
     new Person("Frank Furter").addActivities(coffee2, computing, cafe);
+    new Person("Ed").addActivities(computing);
   }
 
   public Person(String name) {

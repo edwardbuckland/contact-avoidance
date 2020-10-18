@@ -129,12 +129,10 @@ public class Timetable extends UserTab {
 
     @Override
     public void focusGained(FocusEvent e) {
-      activity.selected = true;
+      activity.select();
     }
 
     @Override
-    public void focusLost(FocusEvent e) {
-      activity.selected = false;
-    }
+    public void focusLost(FocusEvent e) {}
   }
 }

@@ -20,6 +20,7 @@ import java.util.stream.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
+import graph.Node;
 import graph.bipartite.*;
 import graphics.Vector;
 import gui.admin.activity.*;
@@ -39,7 +40,6 @@ public class GraphView extends JPanel {
   public static boolean         drawAccessories     = true;
 
   private Vector                translate           = new Vector(0, 0, 0);
-  private Activity              selectedActivity;
 
   public GraphView() {
     setBackground(white);
@@ -232,22 +232,14 @@ public class GraphView extends JPanel {
 
     @Override
     public void mouseMoved(MouseEvent event) {
-      Activity selected_activity = activities.stream()
-                                             .filter(activity -> {
-                                               Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
-                                               return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
-                                             })
-                                             .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
-                                             .findFirst()
-                                             .orElse(null);
-
-      if (selectedActivity != null)
-        selectedActivity.selected = false;
-
-      if (selected_activity != null)
-        selected_activity.selected = true;
-
-      selectedActivity = selected_activity;
+      activities.stream()
+                .filter(activity -> {
+                  Vector screen_point = transform(activity.location).plus(new Vector(getWidth()/2, getHeight()/2, 0));
+                  return event.getPoint().distance(screen_point.x, screen_point.y) < 200/distance(activity.location);
+                })
+                .sorted((first, second) -> (int)signum(distance(first.location) - distance(second.location)))
+                .findFirst()
+                .ifPresentOrElse(Node::select, Node::clearSelection);
     }
 
     @Override
@@ -258,11 +250,11 @@ public class GraphView extends JPanel {
 
     @Override
     public void mouseClicked(MouseEvent event) {
-      if (selectedActivity != null)
+      if (selectedActivity() != null)
       {
         JDialog dialog = new JDialog(SwingUtilities.windowForComponent(GraphView.this), "Manage Activity", ModalityType.APPLICATION_MODAL);
         dialog.setMinimumSize(new Dimension(800, 500));
-        dialog.setContentPane(new ActivityView(selectedActivity));
+        dialog.setContentPane(new ActivityView(selectedActivity()));
         dialog.pack();
         dialog.setLocationRelativeTo(GraphView.this);
         dialog.setVisible(true);

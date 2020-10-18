@@ -49,7 +49,7 @@ public class ActivityView extends JPanel {
     add(new JLabel(timeString(activity.endTime, true)),             RIGHT_COLUMN);
 
     add(new JLabel("Status: "),                                     LEFT_COLUMN);
-    JLabel status_label = new JLabel(activity.status.toString());
+    JLabel status_label = new JLabel(activity.status());
     status_label.setForeground(activity.color());
     add(status_label,                                               RIGHT_COLUMN);
 

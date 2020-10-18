@@ -10,6 +10,7 @@ import java.awt.geom.Arc2D.Double;
 
 import javax.swing.*;
 
+import graph.*;
 import gui.user.tab.*;
 import gui.user.tab.map.*;
 
@@ -24,6 +25,7 @@ public class UserPanel extends JPanel {
     JTabbedPane tabbed_pane = new JTabbedPane();
     tabbed_pane.insertTab("Timetable", null, new Timetable(), "Timetable", 0);
     tabbed_pane.insertTab("Map", null, new MapView(), "Map", 1);
+    tabbed_pane.addChangeListener(event -> Node.clearSelection());
     add(tabbed_pane);
   }
 

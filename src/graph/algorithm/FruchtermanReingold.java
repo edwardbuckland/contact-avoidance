@@ -44,7 +44,7 @@ public class FruchtermanReingold {
       }
 
     activities.stream()
-              .filter(node -> !node.selected && !node.edges.isEmpty())
+              .filter(node -> !node.selected() && !node.edges.isEmpty())
               .forEach(node -> {
                 Vector delta = displacement.get(node);
                 delta.y = 0;
