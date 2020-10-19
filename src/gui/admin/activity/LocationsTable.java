@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import graph.bipartite.*;
+import gui.component.*;
 import gui.user.tab.map.*;
 
 public class LocationsTable extends JTable {
@@ -25,7 +26,7 @@ public class LocationsTable extends JTable {
     setModel(model);
 
     if (activity.pending()) {
-      DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
+      DefaultCellEditor editor = new DefaultCellEditor(new AutoCompleteTextField());
       editor.setClickCountToStart(1);
 
       setDefaultEditor(Object.class, editor);
