@@ -1,71 +1,110 @@
 package gui.component;
 
 import static java.awt.event.KeyEvent.*;
+import static javax.swing.SwingUtilities.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 import javax.swing.*;
 
-public class AutoCompleteTextField extends JTextField implements FocusListener {
+public class AutoCompleteTextField extends JTextField implements FocusListener, WindowFocusListener {
   private static final long         serialVersionUID        = 1817729898247259327L;
 
   private SuggestionsPanel          panel                   = new SuggestionsPanel();
   private JWindow                   window;
 
-  public AutoCompleteTextField() {
+  private List<?>                   options;
+
+  public AutoCompleteTextField(List<?> options) {
+    this.options = options;
+
     addFocusListener(this);
   }
 
   @Override
-  public void focusGained(FocusEvent e) {
+  public void focusGained(FocusEvent event) {
     if (window == null) {
-      window = new JWindow(SwingUtilities.getWindowAncestor(this));
+      window = new JWindow(getWindowAncestor(this));
       window.setContentPane(panel);
+      window.addWindowFocusListener(this);
+      window.setBackground(new Color(0, 0, 0, 0));
+      window.setAlwaysOnTop(true);
     }
 
-    if (!window.isVisible()) {
+    transferFocus();
+
+    invokeLater(() -> {
       window.pack();
       window.setLocation(getLocationOnScreen());
       window.setVisible(true);
-      window.setAlwaysOnTop(true);
+
       panel.textField.requestFocusInWindow();
-    }
-    else {
-      setText(panel.textField.getText());
-      window.setVisible(false);
-      transferFocus();
-    }
+    });
   }
 
   @Override
-  public void focusLost(FocusEvent e) {}
+  public void focusLost(FocusEvent event) {}
+
+  @Override
+  public void windowGainedFocus(WindowEvent e) {
+    updateOptions();
+  }
+
+  @Override
+  public void windowLostFocus(WindowEvent e) {
+    window.setVisible(false);
+  }
+
+  private void updateOptions() {
+    setText(panel.textField.getText());
+    panel.textField.setPreferredSize(getSize());
+
+    panel.list.setListData(options.stream()
+                                  .filter(option -> option.toString().toLowerCase().contains(getText().toLowerCase()))
+                                  .toArray());
+
+    window.pack();
+  }
 
   private class SuggestionsPanel extends JPanel {
     private static final long       serialVersionUID        = -5520568909171146719L;
 
     private JTextField              textField               = new JTextField();
+    private JList<Object>           list                    = new JList<>();
 
     private SuggestionsPanel() {
-      super(null);
-      setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+      super(new BorderLayout());
 
       textField.addKeyListener(new KeyAdapter() {
         @Override
-        public void keyPressed(KeyEvent e) {
-          switch (e.getKeyCode()) {
-          case VK_ESCAPE:
-            AutoCompleteTextField.this.requestFocus();
+        public void keyPressed(KeyEvent event) {
+          invokeLater(() -> {
+            updateOptions();
 
-            break;
-          case VK_ENTER:
-            window.setVisible(false);
-            setText(textField.getText());
-            fireActionPerformed();
-          }
+            switch (event.getKeyCode()) {
+            case VK_ESCAPE:
+              window.setVisible(false);
+
+              break;
+            case VK_ENTER:
+              window.setVisible(false);
+              fireActionPerformed();
+            }
+          });
         }
       });
-      add(textField);
+      add(textField, BorderLayout.NORTH);
+
+      list.addListSelectionListener(event -> {
+        if (list.getSelectedValue() != null)
+          textField.setText(list.getSelectedValue().toString());
+          updateOptions();
+          window.setVisible(false);
+          fireActionPerformed();
+      });
+      add(new JScrollPane(list));
     }
 
     @Override
@@ -81,6 +120,11 @@ public class AutoCompleteTextField extends JTextField implements FocusListener {
     @Override
     public Dimension getMaximumSize() {
       return new Dimension(AutoCompleteTextField.this.getWidth(), super.getMaximumSize().height);
+    }
+
+    @Override
+    public Insets getInsets() {
+      return AutoCompleteTextField.this != null? AutoCompleteTextField.this.getParent().getInsets(): super.getInsets();
     }
   }
 }

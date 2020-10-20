@@ -26,11 +26,13 @@ public class LocationsTable extends JTable {
     setModel(model);
 
     if (activity.pending()) {
-      DefaultCellEditor editor = new DefaultCellEditor(new AutoCompleteTextField());
+      DefaultCellEditor editor = new DefaultCellEditor(new AutoCompleteTextField(Arrays.asList(Building.values())));
       editor.setClickCountToStart(1);
-
       setDefaultEditor(Object.class, editor);
+
       setDefaultRenderer(Object.class, new BuildingsRenderer());
+      setRowHeight(20);
+
       getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "delete");
       getActionMap().put("delete", new AbstractAction() {
         private static final long         serialVersionUID        = -8243629630787622182L;
