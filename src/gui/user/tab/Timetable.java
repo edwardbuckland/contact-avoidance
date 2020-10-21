@@ -6,10 +6,13 @@ import static javax.swing.JOptionPane.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.stream.*;
 
 import javax.swing.*;
 
 import graph.bipartite.*;
+import gui.component.*;
 import gui.user.*;
 
 public class Timetable extends UserTab {
@@ -19,7 +22,7 @@ public class Timetable extends UserTab {
   private static final int      SPACING             = 8;
   private static final int      LEFT_MARGIN         = 45;
 
-  private JComboBox<Activity>   candidateActivities = new JComboBox<>();
+  private AutoCompleteTextField textField           = new AutoCompleteTextField(activities);
   private JButton               registerButton      = new JButton("+");
 
   private Person                person;
@@ -30,20 +33,20 @@ public class Timetable extends UserTab {
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = HORIZONTAL;
     constraints.weightx = 1;
-    constraints.gridwidth = REMAINDER;
 
-    header.add(new JTextField(), constraints);
-
-    constraints.gridwidth = RELATIVE;
-
-    header.add(candidateActivities, constraints);
+    textField.setEnabled(false);
+    header.add(textField, constraints);
 
     constraints.weightx = 0;
 
     registerButton.addActionListener(event -> {
-      person.addActivities((Activity)candidateActivities.getSelectedItem());
+      activities.stream()
+                .filter(activity -> activity.toString().equals(textField.getText()))
+                .forEach(person::addActivities);
       buildTimetable();
+      textField.setText("");
     });
+    registerButton.setEnabled(false);
     header.add(registerButton, constraints);
   }
 
@@ -74,15 +77,17 @@ public class Timetable extends UserTab {
     (person = UserSelector.currentUser).activities()
                                        .forEach(ActivityButton::new);
 
-    candidateActivities.removeAllItems();
+    List<Activity> candidate_activities = activities.stream()
+                                                    .filter(candidate -> person.activities().noneMatch(registered ->
+                                                              registered.startTime < candidate.endTime &&
+                                                              registered.endTime > candidate.startTime))
+                                                    .collect(Collectors.toList());
 
-    activities.stream()
-              .filter(candidate -> person.activities()
-                                         .noneMatch(registered -> registered.startTime < candidate.endTime &&
-                                                                  registered.endTime > candidate.startTime))
-              .forEach(candidateActivities::addItem);
+    textField.options = candidate_activities;
 
-    registerButton.setEnabled(candidateActivities.getSelectedIndex() != -1);
+    boolean enabled = !candidate_activities.isEmpty() && person != null;
+    textField.setEnabled(enabled);
+    registerButton.setEnabled(enabled);
   }
 
   private int timeToY(double time) {

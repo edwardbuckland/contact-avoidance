@@ -18,26 +18,18 @@ public class Person extends ArrayList<Node> implements Drawable {
   public static List<Person>    people              = new ArrayList<>();
   private static int            uniqueIndex;
 
+  static {
+    for (int i = 0; i < 20; i++) {
+      new Person(i + "").addActivities(Activity.activities.get(0),
+                                       Activity.activities.get(30 + (int)(3*random())),
+                                       Activity.activities.get(50 + (int)(6*random())));
+    }
+  }
+
   public int                    index               = uniqueIndex++;
   public String                 name;
 
   private List<Activity>        activities          = new ArrayList<>();
-
-  static {
-    Activity coffee1 = new Activity("coffee", 8, 9);
-    Activity coffee2 = new Activity("coffee", 9, 10);
-    Activity maths = new Activity("maths", 9, 11);
-    Activity computing = new Activity("computing", 10, 12);
-    Activity cafe = new Activity("cafe", 12, 13);
-    Activity sushi = new Activity("sushi", 12, 13);
-    Activity economics = new Activity("economics", 14.25, 16.25);
-    Activity physics = new Activity("physics", 13.25, 16.25);
-    Activity bar = new Activity("bar", 18, 19.5);
-
-    new Person("John Citizen").addActivities(coffee1, computing, physics, bar);
-    new Person("Frank Furter").addActivities(coffee2, computing, cafe);
-    new Person("Ed").addActivities(computing);
-  }
 
   public Person(String name) {
     this.name = name;

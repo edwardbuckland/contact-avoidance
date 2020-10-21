@@ -1,6 +1,7 @@
 package gui.component;
 
 import static java.awt.event.KeyEvent.*;
+import static javax.swing.BorderFactory.*;
 import static javax.swing.SwingUtilities.*;
 
 import java.awt.*;
@@ -12,10 +13,12 @@ import javax.swing.*;
 public class AutoCompleteTextField extends JTextField implements FocusListener, WindowFocusListener {
   private static final long         serialVersionUID        = 1817729898247259327L;
 
+  private static final float        WINDOW_OPACITY          = 0.7f;
+
   private SuggestionsPanel          panel                   = new SuggestionsPanel();
   private JWindow                   window;
 
-  private List<?>                   options;
+  public List<?>                    options;
 
   public AutoCompleteTextField(List<?> options) {
     this.options = options;
@@ -38,6 +41,7 @@ public class AutoCompleteTextField extends JTextField implements FocusListener, 
     invokeLater(() -> {
       window.pack();
       window.setLocation(getLocationOnScreen());
+      window.setOpacity(WINDOW_OPACITY);
       window.setVisible(true);
 
       panel.textField.requestFocusInWindow();
@@ -86,11 +90,9 @@ public class AutoCompleteTextField extends JTextField implements FocusListener, 
             switch (event.getKeyCode()) {
             case VK_ESCAPE:
               window.setVisible(false);
-
               break;
             case VK_ENTER:
-              window.setVisible(false);
-              fireActionPerformed();
+              submit();
             }
           });
         }
@@ -101,10 +103,30 @@ public class AutoCompleteTextField extends JTextField implements FocusListener, 
         if (list.getSelectedValue() != null)
           textField.setText(list.getSelectedValue().toString());
           updateOptions();
-          window.setVisible(false);
-          fireActionPerformed();
+          submit();
       });
-      add(new JScrollPane(list));
+      list.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent event) {
+          window.setOpacity(1);
+        }
+        @Override
+        public void mouseExited(MouseEvent e) {
+          window.setOpacity(WINDOW_OPACITY);
+        }
+      });
+
+      JScrollPane list_pane = new JScrollPane(list);
+      list_pane.setBorder(createEmptyBorder(0, textField.getInsets().left, 0, textField.getInsets().right));
+      list_pane.setOpaque(false);
+      list_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      add(list_pane);
+    }
+
+    private void submit() {
+      window.setVisible(false);
+      fireActionPerformed();
+      textField.setText("");
     }
 
     @Override
@@ -124,7 +146,9 @@ public class AutoCompleteTextField extends JTextField implements FocusListener, 
 
     @Override
     public Insets getInsets() {
-      return AutoCompleteTextField.this != null? AutoCompleteTextField.this.getParent().getInsets(): super.getInsets();
+      return AutoCompleteTextField.this.getParent() != null?
+             AutoCompleteTextField.this.getParent().getInsets():
+             super.getInsets();
     }
   }
 }
