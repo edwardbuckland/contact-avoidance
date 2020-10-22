@@ -18,7 +18,7 @@ import gui.user.*;
 public class Timetable extends UserTab {
   private static final long     serialVersionUID    = 1432849598520383947L;
 
-  private static final int      HEIGHT              = 1500;
+  private static final int      HEIGHT              = 1300;
   private static final int      SPACING             = 8;
   private static final int      LEFT_MARGIN         = 45;
 

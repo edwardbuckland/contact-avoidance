@@ -30,7 +30,7 @@ public class FruchtermanReingold {
            .filter(second -> !second.edges.isEmpty() && second.location.minus(first.location).norm() > 1e-4)
            .forEach(second -> {
              Vector delta = first.location.minus(second.location);
-             displace.accept(first, delta.unit().times(min(1/delta.norm()/attractionRatio(), 0.1)));
+             displace.accept(first, delta.unit().times(1/delta.norm()/attractionRatio()));
            });
     }
 
@@ -38,7 +38,7 @@ public class FruchtermanReingold {
     for (Node first: nodes)
       for (Node second: first.edges.keySet()) {
         Vector delta = first.location.minus(second.location);
-        Vector scaled_delta = delta.times(min(delta.norm()*attractionRatio(), 0.1));
+        Vector scaled_delta = delta.times(delta.norm()*attractionRatio());
         displace.accept(first,  scaled_delta.times(-1));
         displace.accept(second, scaled_delta);
       }
@@ -48,6 +48,7 @@ public class FruchtermanReingold {
               .forEach(node -> {
                 Vector delta = displacement.get(node);
                 delta.y = 0;
+                delta = delta.unit().times(atan(pow(delta.norm()/nodes.size(), 2)));
                 node.location = node.location.plus(delta.times(2));
               });
 
@@ -55,6 +56,6 @@ public class FruchtermanReingold {
   });
 
   private static double attractionRatio() {
-    return pow(attraction.get()/50.0, 10)/80*sqrt(nodes.size()) + 1e-5;
+    return pow(attraction.get()/50.0, 10)/800*sqrt(nodes.size()) + 1e-5;
   }
 }

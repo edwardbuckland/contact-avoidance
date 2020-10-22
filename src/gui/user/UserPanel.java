@@ -7,7 +7,9 @@ import static java.awt.geom.Arc2D.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.geom.Arc2D.Double;
+import java.io.*;
 
+import javax.imageio.*;
 import javax.swing.*;
 
 import graph.*;
@@ -25,6 +27,15 @@ public class UserPanel extends JPanel {
     JTabbedPane tabbed_pane = new JTabbedPane();
     tabbed_pane.insertTab("Timetable", null, new Timetable(), "Timetable", 0);
     tabbed_pane.insertTab("Map", null, new MapView(), "Map", 1);
+
+    try {
+      tabbed_pane.insertTab("QR Code", null, new JLabel(new ImageIcon(ImageIO.read(
+          getClass().getResource("/qr-code.png")))), "QR", 2);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+
     tabbed_pane.addChangeListener(event -> Node.clearSelection());
     add(tabbed_pane);
   }
