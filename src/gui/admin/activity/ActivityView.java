@@ -4,6 +4,7 @@ import static graph.bipartite.Activity.*;
 import static java.awt.GridBagConstraints.*;
 
 import java.awt.*;
+import java.awt.Dialog.*;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -30,6 +31,15 @@ public class ActivityView extends JPanel {
     constraints.fill      = width > 1?   BOTH:      NONE;
 
     return constraints;
+  }
+
+  public static void createActivityViewDialog(Activity activity, Component component) {
+    JDialog dialog = new JDialog(SwingUtilities.windowForComponent(component), "Manage Activity", ModalityType.APPLICATION_MODAL);
+    dialog.setMinimumSize(new Dimension(800, 500));
+    dialog.setContentPane(new ActivityView(activity));
+    dialog.pack();
+    dialog.setLocationRelativeTo(component);
+    dialog.setVisible(true);
   }
 
   private Activity                          activity;

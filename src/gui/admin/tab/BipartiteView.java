@@ -1,4 +1,4 @@
-package gui.admin;
+package gui.admin.tab;
 
 import static graph.Node.*;
 import static graph.bipartite.Activity.*;
@@ -11,7 +11,6 @@ import static javax.swing.BorderFactory.*;
 import static javax.swing.KeyStroke.*;
 
 import java.awt.*;
-import java.awt.Dialog.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
@@ -23,9 +22,10 @@ import javax.swing.Timer;
 import graph.Node;
 import graph.bipartite.*;
 import graphics.Vector;
+import gui.admin.*;
 import gui.admin.activity.*;
 
-public class GraphView extends JPanel {
+public class BipartiteView extends JPanel {
   private static final long     serialVersionUID    = 2621550208556045621L;
 
   private static final double   SPEED               = 0.6;
@@ -36,12 +36,12 @@ public class GraphView extends JPanel {
 
   private static Graphics2D     graphics2D;
 
-  public static GraphView            view                = new GraphView();
+  public static BipartiteView            view                = new BipartiteView();
   public static boolean         drawAccessories     = true;
 
   private Vector                translate           = new Vector(0, 0, 0);
 
-  public GraphView() {
+  public BipartiteView() {
     setBackground(white);
     setFocusable(true);
 
@@ -109,7 +109,7 @@ public class GraphView extends JPanel {
       }
 
 
-    if (GraphView.drawAccessories) {
+    if (BipartiteView.drawAccessories) {
       graphics2D.setColor(lightGray);
       Person.people.forEach(Drawable::draw);
     }
@@ -251,14 +251,7 @@ public class GraphView extends JPanel {
     @Override
     public void mouseClicked(MouseEvent event) {
       if (selectedActivity() != null)
-      {
-        JDialog dialog = new JDialog(SwingUtilities.windowForComponent(GraphView.this), "Manage Activity", ModalityType.APPLICATION_MODAL);
-        dialog.setMinimumSize(new Dimension(800, 500));
-        dialog.setContentPane(new ActivityView(selectedActivity()));
-        dialog.pack();
-        dialog.setLocationRelativeTo(GraphView.this);
-        dialog.setVisible(true);
-      }
+        ActivityView.createActivityViewDialog(selectedActivity(), BipartiteView.this);
     }
 
     @Override

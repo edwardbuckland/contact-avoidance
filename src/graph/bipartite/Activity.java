@@ -1,7 +1,7 @@
 package graph.bipartite;
 
 import static graph.bipartite.Activity.ActivityStatus.*;
-import static gui.admin.GraphView.*;
+import static gui.admin.tab.BipartiteView.*;
 import static java.awt.Color.*;
 
 import java.awt.*;
@@ -12,7 +12,7 @@ import java.util.stream.*;
 import graph.Node;
 import graph.algorithm.*;
 import graphics.Vector;
-import gui.admin.*;
+import gui.admin.tab.*;
 import gui.user.tab.map.*;
 
 public class Activity extends Node {
@@ -118,7 +118,7 @@ public class Activity extends Node {
   public void draw() {
     super.draw();
 
-    if (GraphView.drawAccessories)
+    if (BipartiteView.drawAccessories)
       drawText(toString(), location);
   }
 
@@ -151,6 +151,7 @@ public class Activity extends Node {
     people().forEach(person -> person.removeActivity(this));
     activities.remove(this);
     nodes.remove(this);
+    ActivitiesTable.update.run();
   }
 
   public List<Activity> deriveActivities() {

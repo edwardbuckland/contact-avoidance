@@ -20,6 +20,8 @@ public class LocationsTable extends JTable {
   private Activity                      activity;
 
   public LocationsTable(Activity activity) {
+    super(null);
+
     this.activity = activity;
 
     BuildingsTableModel model = new BuildingsTableModel();

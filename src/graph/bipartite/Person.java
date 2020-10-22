@@ -1,7 +1,7 @@
 package graph.bipartite;
 
 import static graph.Node.*;
-import static gui.admin.GraphView.*;
+import static gui.admin.tab.BipartiteView.*;
 import static java.lang.Math.*;
 
 import java.util.*;

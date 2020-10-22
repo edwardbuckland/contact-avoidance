@@ -4,14 +4,22 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class AdminPanel extends JPanel {
+import gui.admin.tab.*;
+
+public class AdminPanel extends JTabbedPane {
   private static final long     serialVersionUID    = 8504882476208078769L;
 
   public AdminPanel() {
-    super(new BorderLayout());
+    addTab("Activities", null, new JScrollPane(new ActivitiesTable()), "Activities View");
 
-    add(GraphView.view);
+    JPanel integrated_panel = new JPanel(new BorderLayout());
+    integrated_panel.add(new Footer(), BorderLayout.SOUTH);
+    integrated_panel.add(new PeopleView());
+    addTab("People", null, integrated_panel, "People View");
 
-    add(new Footer(), BorderLayout.SOUTH);
+    JPanel bipartite_panel = new JPanel(new BorderLayout());
+    bipartite_panel.add(BipartiteView.view);
+    bipartite_panel.add(new Footer(), BorderLayout.SOUTH);
+    addTab("Bipartite", null, bipartite_panel, "Bipartite View");
   }
 }

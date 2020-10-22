@@ -1,6 +1,6 @@
 package graph;
 
-import static gui.admin.GraphView.*;
+import static gui.admin.tab.BipartiteView.*;
 
 import java.awt.*;
 import java.util.*;

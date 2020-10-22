@@ -1,4 +1,4 @@
-package gui.admin;
+package gui.admin.tab;
 
 import javax.swing.*;
 
@@ -31,7 +31,7 @@ public class Footer extends JPanel {
 
     JCheckBox draw_labels = new JCheckBox("Draw accessories", true);
     draw_labels.addActionListener(event -> {
-      GraphView.drawAccessories = draw_labels.isSelected();
+      BipartiteView.drawAccessories = draw_labels.isSelected();
       repaint();
     });
     add(draw_labels);

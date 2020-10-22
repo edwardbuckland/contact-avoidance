@@ -13,6 +13,7 @@ import javax.swing.Timer;
 import graph.*;
 import graphics.Vector;
 import gui.admin.*;
+import gui.admin.tab.*;
 
 public class FruchtermanReingold {
   public static AtomicInteger   attraction  = new AtomicInteger(50);
@@ -52,7 +53,7 @@ public class FruchtermanReingold {
                 node.location = node.location.plus(delta.times(2));
               });
 
-    GraphView.view.repaint();
+    BipartiteView.view.repaint();
   });
 
   private static double attractionRatio() {
