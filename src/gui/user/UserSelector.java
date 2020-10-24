@@ -17,6 +17,8 @@
 
 package gui.user;
 
+import static javax.swing.JOptionPane.*;
+
 import java.awt.*;
 import java.util.*;
 
@@ -39,7 +41,7 @@ public class UserSelector extends JPanel {
     add(label);
 
     button.addActionListener(event -> {
-      String name = JOptionPane.showInputDialog(this, "Name: ", "Select User", JOptionPane.PLAIN_MESSAGE);
+      String name = showInternalInputDialog(getParent(), "Name: ", "Select User", PLAIN_MESSAGE);
       if (name != null) {
         Optional<Person> new_user = Person.people.stream()
                                           .filter(person -> person.name.equals(name))

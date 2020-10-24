@@ -168,7 +168,7 @@ public class Activity extends Node {
     people().forEach(person -> person.removeActivity(this));
     activities.remove(this);
     nodes.remove(this);
-    ActivitiesTable.update.run();
+    ActivitiesTable.update();
   }
 
   public List<Activity> deriveActivities() {

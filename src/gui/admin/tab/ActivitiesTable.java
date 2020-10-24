@@ -43,7 +43,10 @@ public class ActivitiesTable extends JTable {
   private static final String       LOCATIONS               = "Locations";
 
   private static ActivitiesTable    table;
-  public static Runnable            update                  = () -> table.model.update();
+
+  public static void update() {
+    table.model.update();
+  }
 
   private ActivitiesTableModel      model                   = new ActivitiesTableModel();
 
@@ -64,7 +67,7 @@ public class ActivitiesTable extends JTable {
 
     setDefaultRenderer(Object.class, new StatusRenderer());
 
-    update.run();
+    update();
   }
 
   private class ActivitiesTableModel extends DefaultTableModel {

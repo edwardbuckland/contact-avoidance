@@ -51,7 +51,7 @@ public class UserPanel extends JPanel {
     catch (IOException e) {
       e.printStackTrace();
     }
-    tabbed_pane.addTab("Contact", new ContactTab());
+    tabbed_pane.addTab("Contact", new ContactPanel());
 
     tabbed_pane.addChangeListener(event -> Node.clearSelection());
     add(tabbed_pane);

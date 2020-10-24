@@ -36,7 +36,7 @@ public class ExampleController {
 
     example.load();
 
-    ActivitiesTable.update.run();
+    ActivitiesTable.update();
   }
 
   public interface Example {
