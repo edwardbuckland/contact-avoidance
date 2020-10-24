@@ -15,7 +15,7 @@ import graph.bipartite.*;
 import gui.component.*;
 import gui.user.*;
 
-public class Timetable extends UserTab {
+public class TimetableTab extends UserTab {
   private static final long     serialVersionUID    = 1432849598520383947L;
 
   private static final int      HEIGHT              = 1300;
@@ -27,7 +27,7 @@ public class Timetable extends UserTab {
 
   private Person                person;
 
-  public Timetable() {
+  public TimetableTab() {
     super(new GridBagLayout());
 
     GridBagConstraints constraints = new GridBagConstraints();
@@ -115,7 +115,7 @@ public class Timetable extends UserTab {
         }
       });
 
-      Timetable.this.add(this);
+      TimetableTab.this.add(this);
     }
 
     @Override

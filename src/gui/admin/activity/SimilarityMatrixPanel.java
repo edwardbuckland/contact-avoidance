@@ -42,10 +42,8 @@ public class SimilarityMatrixPanel extends JPanel {
       for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++) {
           double similarity = similarityMatrix[i][j];
-          double red_value =   (similarity > 0.5? 2 - 2*similarity: 1)*255;
-          double green_value = (similarity < 0.5?     2*similarity: 1)*255;
 
-          graphics_2d.setColor(new Color((int)red_value, (int)green_value, 0));
+          graphics_2d.setColor(colourMap(similarity));
           graphics_2d.fill(new Rectangle2D.Double(i*unit_size +   PADDING, j*unit_size +   PADDING,
                                                     unit_size - 2*PADDING,   unit_size - 2*PADDING));
         }
@@ -53,17 +51,32 @@ public class SimilarityMatrixPanel extends JPanel {
       graphics_2d.translate(min(width, height) + 8*PADDING, 0);
       graphics_2d.rotate(-PI/2);
 
-      graphics_2d.setPaint(new GradientPaint(new Point2D.Double(-height - PADDING, 0), red,
-                                             new Point2D.Double(        - PADDING, 0), green));
+      float[] fractions = new float[100];
+      Color[] colours = new Color[fractions.length];
+      for (int i = 0; i < fractions.length; i++) {
+        fractions[i] = i/(fractions.length - 1f);
+        colours[i] = colourMap(fractions[i]);
+      }
+
+      graphics_2d.setPaint(new LinearGradientPaint(new Point2D.Double(-height - PADDING, 0),
+                                                   new Point2D.Double(        - PADDING, 0),
+                                                   fractions, colours));
 
       graphics_2d.fillRect(-height - PADDING, 0, height + 2*PADDING, LEGEND_WIDTH/2);
 
       graphics_2d.setColor(black);
 
       drawAxisLabel(graphics_2d, "Similarity", -PADDING - height/2, CENTER_ALIGNMENT);
-      drawAxisLabel(graphics_2d, " 0.0 ",      -PADDING - height,    RIGHT_ALIGNMENT);
-      drawAxisLabel(graphics_2d, "1.0 ",       -PADDING,              LEFT_ALIGNMENT);
+      drawAxisLabel(graphics_2d, " 0.0",       -PADDING - height,    RIGHT_ALIGNMENT);
+      drawAxisLabel(graphics_2d,  "1.0",       -PADDING,              LEFT_ALIGNMENT);
     }
+  }
+
+  private Color colourMap(double similarity) {
+    double red_value =   (similarity > 0.5? 2 - 2*similarity: 1)*255;
+    double green_value = (similarity < 0.5?     2*similarity: 1)*255;
+
+    return new Color((int)red_value, (int)green_value, 0);
   }
 
   private void drawAxisLabel(Graphics2D graphics_2d, String text, int x, double alignment) {

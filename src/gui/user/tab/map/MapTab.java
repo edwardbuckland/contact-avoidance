@@ -5,6 +5,7 @@ import static java.awt.RenderingHints.*;
 import static java.awt.event.KeyEvent.*;
 import static java.awt.geom.AffineTransform.*;
 import static java.lang.Math.*;
+import static java.util.Collections.min;
 import static javax.swing.KeyStroke.*;
 
 import java.awt.*;
@@ -20,26 +21,31 @@ import graph.*;
 import graph.bipartite.*;
 import gui.user.tab.*;
 
-public class MapView extends UserTab {
-  private static final long             serialVersionUID        = 5304720443805548092L;
+public class MapTab extends UserTab {
+  private static final long                     serialVersionUID        = 5304720443805548092L;
 
-  private static final int              PERCENTAGE_INCREMENT    = 10;
-  private static final int              MARKER_SIZE             = 40;
+  private static final int                      PERCENTAGE_INCREMENT    = 10;
+  private static final int                      MARKER_SIZE             = 40;
 
-  private int                           percentage;
+  private static Map<Integer, BufferedImage>    images                  = new HashMap<>();
 
-  private Map<Integer, BufferedImage>   images                  = new HashMap<>();
+  public static boolean loadNextImage() {
+    int percentage = images.isEmpty()? 100: min(images.keySet()) - PERCENTAGE_INCREMENT;
 
-  public MapView() {
+    try {
+      images.put(percentage, ImageIO.read(MapTab.class.getResource("/parkville-campus-map" + percentage + ".png")));
+    }
+    catch (Exception e) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private int                                   percentage              = min(images.keySet());
+
+  public MapTab() {
     super(new FlowLayout());
-
-    for (percentage = 100;; percentage -= PERCENTAGE_INCREMENT)
-      try {
-        images.put(percentage, ImageIO.read(getClass().getResource("/parkville-campus-map" + percentage + ".png")));
-      } catch (Exception e) {
-        percentage += 10;
-        break;
-      }
 
     int command_mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
@@ -122,7 +128,7 @@ public class MapView extends UserTab {
                 scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
 
               percentage = new_percentage;
-              MapView.this.revalidate();
+              MapTab.this.revalidate();
             });
         }
       });

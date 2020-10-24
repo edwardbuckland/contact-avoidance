@@ -25,9 +25,8 @@ public class UserPanel extends JPanel {
     add(new UserSelector(), BorderLayout.NORTH);
 
     JTabbedPane tabbed_pane = new JTabbedPane();
-    tabbed_pane.addTab("Timetable", null, new Timetable(), "Timetable");
-    tabbed_pane.addTab("Map", null, new MapView(), "Map");
-
+    tabbed_pane.addTab("Timetable", null, new TimetableTab(), "Timetable");
+    tabbed_pane.addTab("Map", null, new MapTab(), "Map");
     try {
       tabbed_pane.addTab("QR Code", null, new JLabel(new ImageIcon(ImageIO.read(
                          getClass().getResource("/qr-code.png")))), "QR Code");
@@ -35,6 +34,7 @@ public class UserPanel extends JPanel {
     catch (IOException e) {
       e.printStackTrace();
     }
+    tabbed_pane.addTab("Contact", new ContactTab());
 
     tabbed_pane.addChangeListener(event -> Node.clearSelection());
     add(tabbed_pane);
