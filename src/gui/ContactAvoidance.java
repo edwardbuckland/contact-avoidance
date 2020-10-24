@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) 2020 Edward Buckland. Some rights reserved.
+ *
+ *  This file is part of "Contact Avoidance".
+ *
+ *  "Contact Avoidance" is distributed under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ *  any later version.
+ *
+ *  "Contact Avoidance" is a demonstration application only and is therefore not intended for
+ *  general use. "Contact Avoidance" is distributed WITHOUT ANY WARRANTY; without even the implied
+ *  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ *  You should have received a copy of the GNU Affero General Public License along with "Contact
+ *  Avoidance". If not, see <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ */
+
 package gui;
 
 import static java.awt.Font.*;
@@ -14,17 +31,17 @@ import gui.admin.*;
 import gui.user.*;
 import gui.user.tab.map.*;
 
-public class LaunchPanel extends JPanel {
+public class ContactAvoidance extends JPanel {
   private static final long         serialVersionUID    = -1151202649231299213L;
 
   private static final String       TITLE               = "Contact Avoidance";
   private static final int          SPACING             = 20;
-  private static final int          PROGRESS_STEPS      = 25;
+  private static final int          PROGRESS_STEPS      = 24;
 
   public static void main(String[] args) {
     System.setProperty("apple.laf.useScreenMenuBar", "true");
 
-    new LaunchPanel();
+    new ContactAvoidance();
   }
 
   private JWindow                   window              = new JWindow();
@@ -32,7 +49,7 @@ public class LaunchPanel extends JPanel {
   private JProgressBar              progressBar         = new JProgressBar(0, PROGRESS_STEPS);
   private JLabel                    progressLabel       = new SizedLabel(" ", PLAIN, 12);
 
-  private LaunchPanel() {
+  private ContactAvoidance() {
     super(null);
 
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -133,7 +150,8 @@ public class LaunchPanel extends JPanel {
     }
 
     private void incrementProgress(String... description) {
-      setProgress(getProgress() + 1);
+      if (!progressLabel.getText().trim().isEmpty())
+        setProgress(getProgress() + 1);
 
       progressBar.setValue(getProgress());
       if (description.length > 0) {
@@ -141,7 +159,7 @@ public class LaunchPanel extends JPanel {
       }
 
       try {
-        Thread.sleep(5);
+        Thread.sleep(10);
       }
       catch (Exception exception) {}
     }
