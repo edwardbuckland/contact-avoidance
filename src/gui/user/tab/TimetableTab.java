@@ -19,6 +19,8 @@ package gui.user.tab;
 
 import static graph.bipartite.Activity.*;
 import static java.awt.GridBagConstraints.*;
+import static java.lang.Math.*;
+import static java.util.Calendar.*;
 import static javax.swing.JOptionPane.*;
 
 import java.awt.*;
@@ -27,9 +29,10 @@ import java.util.List;
 import java.util.stream.*;
 
 import javax.swing.*;
+import javax.swing.Timer;
 
 import graph.bipartite.*;
-import gui.component.*;
+import gui.*;
 import gui.user.*;
 
 public class TimetableTab extends UserTab {
@@ -41,6 +44,7 @@ public class TimetableTab extends UserTab {
 
   private AutoCompleteTextField textField           = new AutoCompleteTextField(activities);
   private JButton               registerButton      = new JButton("+");
+  private JButton               monthButton;
 
   private Person                person;
 
@@ -49,9 +53,14 @@ public class TimetableTab extends UserTab {
 
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = HORIZONTAL;
+
+    monthButton = new JButton("< " + getInstance().getDisplayName(MONTH, SHORT, getLocale()));
+    header.add(monthButton, constraints);
+
     constraints.weightx = 1;
 
     textField.setEnabled(false);
+    textField.addMouseListener(new GrowListener());
     header.add(textField, constraints);
 
     constraints.weightx = 0;
@@ -111,6 +120,36 @@ public class TimetableTab extends UserTab {
     return (int)(SPACING + (HEIGHT - 2*SPACING)*time/24.0);
   }
 
+  private class GrowListener extends MouseAdapter {
+    private static final int    STEP_SIZE           = 5;
+
+    private int                 step;
+    private Dimension           initialSize         = monthButton.getPreferredSize();
+
+    private Timer timer = new Timer(1, event -> {
+      int new_width = max(0, min(initialSize.width, monthButton.getWidth() + step*STEP_SIZE));
+
+      if (new_width == 0 || new_width == initialSize.width)
+        ((Timer)event.getSource()).stop();
+
+      monthButton.setPreferredSize(new Dimension(new_width, initialSize.height));
+      monthButton.setMinimumSize(monthButton.getPreferredSize());
+      monthButton.revalidate();
+    });
+
+    @Override
+    public void mouseEntered(MouseEvent event) {
+      step = -1;
+      timer.restart();
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+      step = 1;
+      timer.restart();
+    }
+  }
+
   private class ActivityButton extends JButton implements FocusListener {
     private static final long serialVersionUID = 6495591952070127440L;
 
@@ -125,8 +164,8 @@ public class TimetableTab extends UserTab {
       addFocusListener(this);
 
       addActionListener(event -> {
-        if (showConfirmDialog(this, "Delete \"" + activity + "\"?", "Confirm delete", OK_CANCEL_OPTION,
-            PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
+        if (showInternalConfirmDialog(getRootPane().getContentPane(), "Delete \"" + activity + "\"?",
+            "Confirm delete", OK_CANCEL_OPTION, PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
           person.removeActivity(activity);
           buildTimetable();
         }

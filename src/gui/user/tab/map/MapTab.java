@@ -36,6 +36,7 @@ import javax.swing.*;
 
 import graph.*;
 import graph.bipartite.*;
+import gui.*;
 import gui.user.tab.*;
 
 public class MapTab extends UserTab {
@@ -50,7 +51,8 @@ public class MapTab extends UserTab {
     int percentage = images.isEmpty()? 100: min(images.keySet()) - PERCENTAGE_INCREMENT;
 
     try {
-      images.put(percentage, ImageIO.read(MapTab.class.getResource("/parkville-campus-map" + percentage + ".png")));
+      images.put(percentage, ImageIO.read(MapTab.class.getResource("/parkville-campus-map" +
+                                          percentage + ".png")));
     }
     catch (Exception e) {
       return false;
@@ -112,6 +114,12 @@ public class MapTab extends UserTab {
                    graphics_2d.fill(marker);
                    graphics_2d.setColor(Color.black);
                    graphics_2d.draw(marker);
+
+                   Rectangle2D bounds = graphics_2d.getFontMetrics().getStringBounds(activity.toString(),
+                                                                                     graphics_2d);
+
+                   OutlinedText.drawText(graphics_2d, activity.toString(), getX(activity) -
+                                         bounds.getWidth()/2, getY(activity) + bounds.getHeight());
                  });
     }
   }

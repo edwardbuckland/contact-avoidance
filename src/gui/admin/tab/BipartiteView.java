@@ -39,6 +39,7 @@ import javax.swing.Timer;
 import graph.Node;
 import graph.bipartite.*;
 import graphics.Vector;
+import gui.*;
 import gui.admin.*;
 import gui.admin.activity.*;
 
@@ -200,20 +201,7 @@ public class BipartiteView extends JPanel {
   public static void drawText(String text, Vector position) {
     Vector transformed = transform(position);
 
-    Color color = graphics2D.getColor();
-
-    graphics2D.setColor(view.getBackground());
-    graphics2D.translate(1, 1);
-    for (int i = 0, j = 1; i < 4; i += j = 1 - j) {
-      graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
-      graphics2D.translate((i - 1)%2, (i - 2)%2);
-    }
-    graphics2D.translate(-1, -1);
-
-    graphics2D.setColor(black);
-    graphics2D.drawString(text, (float)(transformed.x + 5), (float)(transformed.y - 5));
-
-    graphics2D.setColor(color);
+    OutlinedText.drawText(graphics2D, text, transformed.x, transformed.y);
   }
 
   public static void drawPoint(Vector position, double size, Color color) {

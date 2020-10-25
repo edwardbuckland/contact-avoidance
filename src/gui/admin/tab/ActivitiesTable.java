@@ -108,7 +108,7 @@ public class ActivitiesTable extends JTable {
         return activity.name;
 
       case STATUS:
-        return activity.status();
+        return activity.approved()? "0": activity.scheduled()? "1": activity.pending()? "2": "3";
 
       case START_TIME:
         return number_to_string.apply(activity.startTime);

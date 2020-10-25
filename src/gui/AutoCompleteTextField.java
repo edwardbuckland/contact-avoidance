@@ -15,7 +15,7 @@
  *  Avoidance". If not, see <https://www.gnu.org/licenses/agpl-3.0.en.html>.
  */
 
-package gui.component;
+package gui;
 
 import static java.awt.event.KeyEvent.*;
 import static javax.swing.BorderFactory.*;

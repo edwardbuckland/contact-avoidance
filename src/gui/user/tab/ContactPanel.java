@@ -109,24 +109,38 @@ public class ContactPanel extends JPanel {
 
     JButton submit_button = new JButton("Submit");
     submit_button.addActionListener(event -> {
-      new Activity(name.getText(), getTime(start_hour, start_minute, start_period),
-                                   getTime(  end_hour,   end_minute,   end_period));
+      double start_time = getTime(start_hour, start_minute, start_period);
+      double   end_time = getTime(  end_hour,   end_minute,   end_period);
 
-      ActivitiesTable.update();
-
-      for (Component component: getComponents()) {
-        if (component instanceof JTextComponent) {
-          ((JTextComponent)component).setText("");
-        }
+      if (name.getText().isEmpty()) {
+        showMessage("Activity name cannot be empty");
       }
+      else if (start_time > end_time) {
+        showMessage("Activity may not conclude before it has begun");
+      }
+      else {
+        new Activity(name.getText(), start_time, end_time);
 
-      showInternalMessageDialog(getParent().getParent(), "Request submitted", "", PLAIN_MESSAGE);
+        ActivitiesTable.update();
+
+        for (Component component: getComponents()) {
+          if (component instanceof JTextComponent) {
+            ((JTextComponent)component).setText("");
+          }
+        }
+
+        showMessage("Request submitted");
+      }
     });
     add(submit_button, constraints);
   }
 
   private double getTime(TimeSpinner hour, TimeSpinner minute, PeriodComboBox period) {
     return hour.value()%12 + minute.value()/60.0 + (period.getSelectedItem() == AM? 0: 12);
+  }
+
+  private void showMessage(String message) {
+    showInternalMessageDialog(getRootPane().getContentPane(), message, "", PLAIN_MESSAGE);
   }
 
   private class TimeSpinner extends JSpinner {

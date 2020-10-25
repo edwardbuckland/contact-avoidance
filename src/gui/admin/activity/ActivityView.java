@@ -51,7 +51,8 @@ public class ActivityView extends JPanel {
   }
 
   public static void createActivityViewDialog(Activity activity, Component component) {
-    JDialog dialog = new JDialog(SwingUtilities.windowForComponent(component), "Manage Activity", ModalityType.APPLICATION_MODAL);
+    JDialog dialog = new JDialog(SwingUtilities.windowForComponent(component), "Manage Activity",
+                                 ModalityType.APPLICATION_MODAL);
     dialog.setMinimumSize(new Dimension(800, 500));
     dialog.setContentPane(new ActivityView(activity));
     dialog.pack();
@@ -87,8 +88,14 @@ public class ActivityView extends JPanel {
     table_pane.setPreferredSize(new Dimension(0, 0));
     add(table_pane,                                                 columnConstraints(0, 2, 1));
 
-    add(new SplitButton("Random", activity::randomSplit),           DOUBLE_COLUMN);
-    add(new SplitButton("Clustered", activity::clusteredSplit),     DOUBLE_COLUMN);
+    if (activity.pending() || activity.scheduled()) {
+      add(new SplitButton("Random", activity::randomSplit),         DOUBLE_COLUMN);
+      add(new SplitButton("Clustered", activity::clusteredSplit),   DOUBLE_COLUMN);
+    }
+    if (activity.scheduled())
+      add(new ActivityActionButton("Approve", activity::approve),   DOUBLE_COLUMN);
+    if (!activity.approved())
+      add(new ActivityActionButton("Reject", activity::reject),     DOUBLE_COLUMN);
 
     GridBagConstraints big_constraint = columnConstraints(2, 1, 1);
 
@@ -100,7 +107,7 @@ public class ActivityView extends JPanel {
 
     getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
     getActionMap().put("dispose", new AbstractAction() {
-      private static final long             serialVersionUID        = -6359204723151660L;
+      private static final long             serialVersionUID            = -6359204723151660L;
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -113,16 +120,22 @@ public class ActivityView extends JPanel {
     ((JDialog)SwingUtilities.getRoot(this)).dispose();
   }
 
-  private class SplitButton extends JButton {
-    private static final long               serialVersionUID        = -4875816072232181047L;
+  private class ActivityActionButton extends JButton {
+    private static final long               serialVersionUID            = -4875816072232181047L;
 
-    private SplitButton(String text, Runnable action) {
+    private ActivityActionButton(String text, Runnable action) {
       super(text + " split");
 
       addActionListener(event -> {
         action.run();
         dispose();
       });
+    }
+  }
+
+  private class SplitButton extends ActivityActionButton {
+    private SplitButton(String text, Runnable action) {
+      super(text + " split", action);
     }
 
     @Override

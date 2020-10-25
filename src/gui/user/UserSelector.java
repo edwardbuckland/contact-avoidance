@@ -41,7 +41,9 @@ public class UserSelector extends JPanel {
     add(label);
 
     button.addActionListener(event -> {
-      String name = showInternalInputDialog(getParent(), "Name: ", "Select User", PLAIN_MESSAGE);
+      String name = showInternalInputDialog(getRootPane().getContentPane(), "Name: ", "Select User",
+                                            PLAIN_MESSAGE);
+
       if (name != null) {
         Optional<Person> new_user = Person.people.stream()
                                           .filter(person -> person.name.equals(name))

@@ -28,7 +28,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import graph.bipartite.*;
-import gui.component.*;
+import gui.*;
 import gui.user.tab.map.*;
 
 public class LocationsTable extends JTable {
@@ -44,8 +44,8 @@ public class LocationsTable extends JTable {
     BuildingsTableModel model = new BuildingsTableModel();
     setModel(model);
 
-    if (activity.pending()) {
-      DefaultCellEditor editor = new DefaultCellEditor(new AutoCompleteTextField(Arrays.asList(Building.values())));
+    if (activity.pending() || activity.scheduled()) {
+      DefaultCellEditor editor = new DefaultCellEditor(new AutoCompleteTextField(asList(Building.values())));
       editor.setClickCountToStart(1);
       setDefaultEditor(Object.class, editor);
 
@@ -54,7 +54,7 @@ public class LocationsTable extends JTable {
 
       getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "delete");
       getActionMap().put("delete", new AbstractAction() {
-        private static final long         serialVersionUID        = -8243629630787622182L;
+        private static final long       serialVersionUID        = -8243629630787622182L;
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -85,7 +85,7 @@ public class LocationsTable extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-      return activity.pending() && row == getRowCount() - 1;
+      return (activity.pending() || activity.scheduled()) && row == getRowCount() - 1;
     }
 
     @Override

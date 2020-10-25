@@ -67,7 +67,8 @@ public class Activity extends Node {
   }
 
   protected enum ActivityStatus {
-    PENDING_APPROVAL            (orange),
+    PENDING_APPROVAL            (yellow),
+    SCHEDULED                   (orange),
     APPROVED                    (green ),
     REJECTED                    (red   );
 
@@ -102,6 +103,10 @@ public class Activity extends Node {
     activities.add(this);
   }
 
+  public void schedule() {
+    status = SCHEDULED;
+  }
+
   public void approve() {
     status = APPROVED;
   }
@@ -114,12 +119,16 @@ public class Activity extends Node {
     return status.toString();
   }
 
-  public boolean approved() {
-    return status == APPROVED;
-  }
-
   public boolean pending() {
     return status == PENDING_APPROVAL;
+  }
+
+  public boolean scheduled() {
+    return status == SCHEDULED;
+  }
+
+  public boolean approved() {
+    return status == APPROVED;
   }
 
   public boolean selected() {
@@ -176,7 +185,7 @@ public class Activity extends Node {
                     .map(location -> {
                       Activity activity = new Activity(name + " " + location, startTime, endTime);
                       activity.locations.add(location);
-                      activity.approve();
+                      activity.schedule();
                       return activity;
                     })
                     .collect(Collectors.toList());
