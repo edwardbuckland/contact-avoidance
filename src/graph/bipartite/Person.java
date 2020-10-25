@@ -32,6 +32,8 @@ import gui.admin.*;
 public class Person extends ArrayList<Node> implements Drawable {
   private static final long     serialVersionUID    = -3796609626176481425L;
 
+  private static final double   PROBABILITY         = 0.01;
+
   public static List<Person>    people              = new ArrayList<>();
   private static int            uniqueIndex;
 
@@ -98,18 +100,18 @@ public class Person extends ArrayList<Node> implements Drawable {
       activities.sort((first, second) -> (int)signum(first.endTime - second.endTime));
 
       Node node = new PersonNode(timePoint(0), this);
-      node.edges.put(activities.get(0), 1.0);
+      node.edges.put(activities.get(0), PROBABILITY);
       add(node);
 
       for (int i = 0; i < activities.size() - 1; i++) {
         node = new PersonNode(timePoint((activities.get(i).endTime + activities.get(i + 1).startTime)/2), this);
-        activities.get(i).edges.put(node, 1.0);
-        node.edges.put(activities.get(i + 1), 1.0);
+        activities.get(i).edges.put(node, PROBABILITY);
+        node.edges.put(activities.get(i + 1), PROBABILITY);
         add(node);
       }
 
       node = new PersonNode(timePoint(24), this);
-      activities.get(activities.size() - 1).edges.put(node, 1.0);
+      activities.get(activities.size() - 1).edges.put(node, PROBABILITY);
       add(node);
     }
   }
