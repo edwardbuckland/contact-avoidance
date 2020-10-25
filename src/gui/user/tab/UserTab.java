@@ -35,6 +35,7 @@ public abstract class UserTab extends JPanel {
     header.setLayout(manager);
     add(header, BorderLayout.NORTH);
 
+    panel.setBackground(panel.getBackground().brighter());
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     add(scrollPane, BorderLayout.CENTER);
   }

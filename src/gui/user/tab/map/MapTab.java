@@ -42,10 +42,10 @@ import gui.user.tab.*;
 public class MapTab extends UserTab {
   private static final long                     serialVersionUID        = 5304720443805548092L;
 
-  private static final int                      PERCENTAGE_INCREMENT    = 10;
+  public static final int                       PERCENTAGE_INCREMENT    = 10;
   private static final int                      MARKER_SIZE             = 40;
 
-  private static Map<Integer, BufferedImage>    images                  = new HashMap<>();
+  public static Map<Integer, BufferedImage>     images                  = new HashMap<>();
 
   public static boolean loadNextImage() {
     int percentage = images.isEmpty()? 100: min(images.keySet()) - PERCENTAGE_INCREMENT;
@@ -144,17 +144,17 @@ public class MapTab extends UserTab {
         private static final long       serialVersionUID        = -3256774310195693202L;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
           int new_percentage = percentage + (zoom_in? 1: -1)*PERCENTAGE_INCREMENT;
 
-          if (images.containsKey(new_percentage))
-            SwingUtilities.invokeLater(() -> {
-              for (int i = 0; i < 2; i++)
-                scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
+          if (images.containsKey(new_percentage)) {
+            for (int i = 0; i < 2; i++)
+              scrollBars()[i].setValue(scrollBars()[i].getValue()*new_percentage/percentage);
 
+            SwingUtilities.invokeLater(() -> {
               percentage = new_percentage;
-              MapTab.this.revalidate();
             });
+          }
         }
       });
 

@@ -56,6 +56,7 @@ public class ActivitiesTable extends JTable {
     table = this;
 
     setModel(model);
+    setDefaultRenderer(Object.class, new StatusRenderer());
 
     addMouseListener(new MouseAdapter() {
       @Override
@@ -64,8 +65,6 @@ public class ActivitiesTable extends JTable {
           ActivityView.createActivityViewDialog((Activity)getValueAt(getSelectedRow(), 0), getParent());
       }
     });
-
-    setDefaultRenderer(Object.class, new StatusRenderer());
 
     update();
   }

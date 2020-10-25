@@ -124,7 +124,7 @@ public class ActivityView extends JPanel {
     private static final long               serialVersionUID            = -4875816072232181047L;
 
     private ActivityActionButton(String text, Runnable action) {
-      super(text + " split");
+      super(text);
 
       addActionListener(event -> {
         action.run();
@@ -134,6 +134,8 @@ public class ActivityView extends JPanel {
   }
 
   private class SplitButton extends ActivityActionButton {
+    private static final long               serialVersionUID            = 6262590133732957174L;
+
     private SplitButton(String text, Runnable action) {
       super(text + " split", action);
     }

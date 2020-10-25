@@ -29,14 +29,16 @@ public class AdminPanel extends JTabbedPane {
   public AdminPanel() {
     addTab("Activities", null, new JScrollPane(new ActivitiesTable()), "Activities View");
 
-    JPanel integrated_panel = new JPanel(new BorderLayout());
-    integrated_panel.add(new Footer(), BorderLayout.SOUTH);
-    integrated_panel.add(new PeopleView());
-    addTab("People", null, integrated_panel, "People View");
-
     JPanel bipartite_panel = new JPanel(new BorderLayout());
     bipartite_panel.add(BipartiteView.view);
     bipartite_panel.add(new Footer(), BorderLayout.SOUTH);
     addTab("Bipartite", null, bipartite_panel, "Bipartite View");
+
+    addTab("Map", null, new AggregatedMapView(), "Map View");
+
+    JPanel integrated_panel = new JPanel(new BorderLayout());
+    integrated_panel.add(new Footer(), BorderLayout.SOUTH);
+    integrated_panel.add(new PeopleView());
+    addTab("People", null, integrated_panel, "People View");
   }
 }
