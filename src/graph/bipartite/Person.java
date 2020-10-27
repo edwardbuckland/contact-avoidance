@@ -18,7 +18,7 @@
 package graph.bipartite;
 
 import static graph.Node.*;
-import static gui.admin.tab.BipartiteView.*;
+import static gui.admin.tab.bipartite.BipartiteView.*;
 import static java.lang.Math.*;
 
 import java.util.*;
@@ -32,7 +32,7 @@ import gui.admin.*;
 public class Person extends ArrayList<Node> implements Drawable {
   private static final long     serialVersionUID    = -3796609626176481425L;
 
-  private static final double   PROBABILITY         = 0.01;
+  private static final double   PROBABILITY         = 0.5;
 
   public static List<Person>    people              = new ArrayList<>();
   private static int            uniqueIndex;

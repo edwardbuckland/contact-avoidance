@@ -18,7 +18,7 @@
 package graph.bipartite;
 
 import static graph.bipartite.Activity.ActivityStatus.*;
-import static gui.admin.tab.BipartiteView.*;
+import static gui.admin.tab.bipartite.BipartiteView.*;
 import static java.awt.Color.*;
 
 import java.awt.*;
@@ -30,6 +30,7 @@ import graph.Node;
 import graph.algorithm.*;
 import graphics.Vector;
 import gui.admin.tab.*;
+import gui.admin.tab.bipartite.*;
 import gui.user.tab.map.*;
 
 public class Activity extends Node {

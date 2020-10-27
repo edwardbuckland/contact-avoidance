@@ -15,27 +15,21 @@
  *  Avoidance". If not, see <https://www.gnu.org/licenses/agpl-3.0.en.html>.
  */
 
-package gui.admin;
+package graph.algorithm;
 
-import java.awt.*;
+import java.util.stream.*;
 
-import javax.swing.*;
+public class GraphLaplacianTransform {
+    public static void unnormalisedLaplacian(double[][] similarity_matrix) {
+      int n = similarity_matrix.length;
 
-import gui.admin.tab.*;
-import gui.admin.tab.bipartite.*;
+      double[] degree = new double[n];
 
-public class AdminPanel extends JTabbedPane {
-  private static final long     serialVersionUID    = 8504882476208078769L;
+      for (int i = 0; i < n; i++)
+        degree[i] = DoubleStream.of(similarity_matrix[i]).sum() - similarity_matrix[i][i];
 
-  public AdminPanel() {
-    addTab("Activities", null, new JScrollPane(new ActivitiesTable()), "Activities View");
-
-    JPanel bipartite_panel = new JPanel(new BorderLayout());
-    bipartite_panel.add(BipartiteView.view);
-    bipartite_panel.add(new Footer(), BorderLayout.SOUTH);
-    addTab("Bipartite", null, bipartite_panel, "Bipartite View");
-
-    addTab("Map", null, new AggregatedMapView(), "Map View");
-    addTab("People", null, new PeopleView(), "People View");
-  }
+      for (int i = 0; i < n; i ++)
+        for (int j = 0; j < n; j++)
+          similarity_matrix[i][j] = i == j? degree[i]: - similarity_matrix[i][j];
+    }
 }

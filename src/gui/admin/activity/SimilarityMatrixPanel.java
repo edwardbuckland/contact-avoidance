@@ -31,10 +31,15 @@ public class SimilarityMatrixPanel extends JPanel {
   private static final int              LEGEND_WIDTH            = 30;
   private static final int              PADDING                 = 2;
 
-  private double[][]                    similarityMatrix;
+  protected double[][]                  similarityMatrix;
 
-  SimilarityMatrixPanel(double[][] similarity_matrix) {
+  private String                        axisLabel;
+  private boolean                       coloursReversed;
+
+  public SimilarityMatrixPanel(double[][] similarity_matrix, String axis_label, boolean colours_reversed) {
     similarityMatrix = similarity_matrix;
+    axisLabel = axis_label;
+    coloursReversed = colours_reversed;
   }
 
   @Override
@@ -45,6 +50,8 @@ public class SimilarityMatrixPanel extends JPanel {
 
     if (n > 0) {
       Graphics2D graphics_2d = (Graphics2D)graphics;
+
+      AffineTransform transform = graphics_2d.getTransform();
 
       int width = getWidth() - LEGEND_WIDTH - 10*PADDING;
       int height = getHeight();
@@ -83,14 +90,19 @@ public class SimilarityMatrixPanel extends JPanel {
 
       graphics_2d.setColor(black);
 
-      drawAxisLabel(graphics_2d, "Similarity", -PADDING - height/2, CENTER_ALIGNMENT);
-      drawAxisLabel(graphics_2d, " 0.0",       -PADDING - height,    RIGHT_ALIGNMENT);
-      drawAxisLabel(graphics_2d,  "1.0",       -PADDING,              LEFT_ALIGNMENT);
+      drawAxisLabel(graphics_2d, axisLabel, -PADDING - height/2, CENTER_ALIGNMENT);
+      drawAxisLabel(graphics_2d, " 0.0",    -PADDING - height,    RIGHT_ALIGNMENT);
+      drawAxisLabel(graphics_2d,  "1.0",    -PADDING,              LEFT_ALIGNMENT);
+
+      graphics_2d.setTransform(transform);
     }
   }
 
   private Color colourMap(double similarity) {
-    double red_value =   (similarity > 0.5? 2 - 2*similarity: 1)*255;
+    if (coloursReversed)
+      similarity = 1 - similarity;
+
+    double   red_value = (similarity > 0.5? 2 - 2*similarity: 1)*255;
     double green_value = (similarity < 0.5?     2*similarity: 1)*255;
 
     return new Color((int)red_value, (int)green_value, 0);

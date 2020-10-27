@@ -17,7 +17,7 @@
 
 package graph;
 
-import static gui.admin.tab.BipartiteView.*;
+import static gui.admin.tab.bipartite.BipartiteView.*;
 
 import java.awt.*;
 import java.util.*;

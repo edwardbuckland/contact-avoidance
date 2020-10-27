@@ -17,12 +17,45 @@
 
 package gui.admin.tab;
 
+import static java.awt.BorderLayout.*;
+import static java.util.Arrays.*;
+
+import java.awt.*;
+import java.util.*;
+
 import javax.swing.*;
 
+import graph.algorithm.*;
+import gui.admin.activity.*;
+
 public class PeopleView extends JPanel {
-  private static final long     serialVersionUID    = 3870531388356358843L;
+  private static final long     serialVersionUID        = 3870531388356358843L;
+
+  private JButton               integrateButton         = new JButton("Calculate integral");
+  private JLabel                spectralRadiusLabel     = new JLabel();
 
   public PeopleView() {
-    add(new JButton("Calculate integral"));
+    super(new BorderLayout());
+
+    JPanel header = new JPanel();
+    header.add(integrateButton);
+    header.add(spectralRadiusLabel);
+
+    add(header, NORTH);
+
+    integrateButton.addActionListener(event -> {
+      removeAll();
+
+      double[][] similarity_matrix = GraphIntegral.integrate();
+      GraphLaplacianTransform.unnormalisedLaplacian(similarity_matrix);
+
+      OptionalDouble spectral_radius = stream(QRSpectralDecomposition.decompose(similarity_matrix)).max();
+
+      if (spectral_radius.isPresent())
+        spectralRadiusLabel.setText("Laplacian Spectral Radius: " + spectral_radius.getAsDouble());
+
+      add(header, NORTH);
+      add(new SimilarityMatrixPanel(GraphIntegral.integrate(), "Probability", true));
+    });
   }
 }

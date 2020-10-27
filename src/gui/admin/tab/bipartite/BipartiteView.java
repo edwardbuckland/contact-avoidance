@@ -15,7 +15,7 @@
  *  Avoidance". If not, see <https://www.gnu.org/licenses/agpl-3.0.en.html>.
  */
 
-package gui.admin.tab;
+package gui.admin.tab.bipartite;
 
 import static graph.Node.*;
 import static graph.bipartite.Activity.*;

@@ -36,7 +36,8 @@ public class GraphIntegral {
       probabilities.put(node, new double[n]);
 
     for (int i = 0; i < n; i++)
-      probabilities.get(people.get(i).get(0))[i] = 0.01;
+      if (!people.get(i).isEmpty())
+        probabilities.get(people.get(i).get(0))[i] = 1;
 
     nodes.stream()
          .sorted((first, second) -> (int)signum(first.location.y - second.location.y))
@@ -45,12 +46,15 @@ public class GraphIntegral {
 
            if (node instanceof PersonNode) {
              Person person = ((PersonNode)node).person;
+             int index = person.indexOf(node) + 1;
 
-             updateProbability(probabilities, node, person.get(person.indexOf(node) + 1), 1.0);
+             if (index < person.size())
+               updateProbability(probabilities, node, person.get(index), 1);
            }
          });
 
     return people.stream()
+                 .filter(person -> !person.isEmpty())
                  .map(person -> probabilities.get(person.get(person.size() - 1)))
                  .toArray(double[][]::new);
   }
@@ -59,6 +63,6 @@ public class GraphIntegral {
                                         Node destination, double probability) {
     for (int i = 0; i < people.size(); i++)
       probabilities.get(destination)[i] = 1 - (1 - probabilities.get(destination)[i])*
-                                          probabilities.get(source)[i]*probability;
+                                          (1 - probabilities.get(source)[i]*probability);
   }
 }

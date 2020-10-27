@@ -30,6 +30,7 @@ import javax.swing.Timer;
 import graph.*;
 import graphics.Vector;
 import gui.admin.tab.*;
+import gui.admin.tab.bipartite.*;
 
 public class FruchtermanReingold {
   public static AtomicInteger   attraction  = new AtomicInteger(50);

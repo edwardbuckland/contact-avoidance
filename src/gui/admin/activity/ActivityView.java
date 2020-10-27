@@ -103,7 +103,7 @@ public class ActivityView extends JPanel {
     big_constraint.gridheight = REMAINDER;
     big_constraint.weightx    = 1;
 
-    add(new SimilarityMatrixPanel(activity.similarityMatrix()), big_constraint);
+    add(new SimilarityMatrixPanel(activity.similarityMatrix(), "similarity", false), big_constraint);
 
     getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
     getActionMap().put("dispose", new AbstractAction() {
