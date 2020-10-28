@@ -36,28 +36,6 @@ import gui.user.tab.map.*;
 public class Activity extends Node {
   public static List<Activity>  activities          = new ArrayList<>();
 
-  static {
-    for (double time: new double[] {9.0, 10.0, 11.0, 12.0, 13.0, 14.25, 15.25, 16.25, 17.25}) {
-      new Activity("Coffee",    time,   time + 1);
-      new Activity("Sushi",     time,   time + 1);
-
-      new Activity("Gym",       time,   time + 1);
-      new Activity("Swim",      time,   time + 1);
-      new Activity("Tennis",    time,   time + 1);
-      new Activity("Squash",    time,   time + 1);
-
-      new Activity("Library",   time,   time + 1);
-    }
-
-    new Activity("maths", 9, 11);
-    new Activity("computing", 10, 12);
-    new Activity("cafe", 12, 13);
-    new Activity("sushi", 12, 13);
-    new Activity("economics", 14.25, 16.25);
-    new Activity("physics", 13.25, 16.25);
-    new Activity("bar", 18, 19.5);
-  }
-
   public static Activity selectedActivity() {
     return selectedNode instanceof Activity? (Activity)selectedNode: null;
   }

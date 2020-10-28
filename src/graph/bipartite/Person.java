@@ -35,20 +35,11 @@ public class Person extends ArrayList<Node> implements Drawable {
   private static final double   PROBABILITY         = 0.5;
 
   public static List<Person>    people              = new ArrayList<>();
-  private static int            uniqueIndex;
 
-  static {
-    for (int i = 0; i < 20; i++) {
-      new Person(i + "").addActivities(Activity.activities.get(0),
-                                       Activity.activities.get(30 + (int)(3*random())),
-                                       Activity.activities.get(50 + (int)(6*random())));
-    }
-  }
-
-  public int                    index               = uniqueIndex++;
+  public int                    index               = Person.people.size();
   public String                 name;
 
-  private List<Activity>        activities          = new ArrayList<>();
+  public List<Activity>         activities          = new ArrayList<>();
 
   public Person(String name) {
     this.name = name;

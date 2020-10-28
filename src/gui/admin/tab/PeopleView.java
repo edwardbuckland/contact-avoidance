@@ -18,6 +18,7 @@
 package gui.admin.tab;
 
 import static java.awt.BorderLayout.*;
+import static java.lang.String.*;
 import static java.util.Arrays.*;
 
 import java.awt.*;
@@ -33,12 +34,14 @@ public class PeopleView extends JPanel {
 
   private JButton               integrateButton         = new JButton("Calculate integral");
   private JLabel                spectralRadiusLabel     = new JLabel();
+  private JLabel                primaryContactsLabel    = new JLabel();
 
   public PeopleView() {
     super(new BorderLayout());
 
     JPanel header = new JPanel();
     header.add(integrateButton);
+    header.add(primaryContactsLabel);
     header.add(spectralRadiusLabel);
 
     add(header, NORTH);
@@ -52,7 +55,12 @@ public class PeopleView extends JPanel {
       OptionalDouble spectral_radius = stream(QRSpectralDecomposition.decompose(similarity_matrix)).max();
 
       if (spectral_radius.isPresent())
-        spectralRadiusLabel.setText("Laplacian Spectral Radius: " + spectral_radius.getAsDouble());
+        spectralRadiusLabel.setText(format("Laplacian Spectral Radius: %.5f", spectral_radius.getAsDouble()));
+
+      double primary_contacts = KAryContacts.averageContacts(1);
+
+      if (!Double.isNaN(primary_contacts))
+        primaryContactsLabel.setText(format("Average Primary Contacts: %.5f", primary_contacts));
 
       add(header, NORTH);
       add(new SimilarityMatrixPanel(GraphIntegral.integrate(), "Probability", true));

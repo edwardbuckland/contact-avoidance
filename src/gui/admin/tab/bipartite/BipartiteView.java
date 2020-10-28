@@ -54,7 +54,7 @@ public class BipartiteView extends JPanel {
 
   private static Graphics2D     graphics2D;
 
-  public static BipartiteView            view                = new BipartiteView();
+  public static BipartiteView   view                = new BipartiteView();
   public static boolean         drawAccessories     = true;
 
   private Vector                translate           = new Vector(0, 0, 0);

@@ -15,31 +15,21 @@
  *  Avoidance". If not, see <https://www.gnu.org/licenses/agpl-3.0.en.html>.
  */
 
-package example;
+package graph.algorithm;
 
-import java.util.*;
+import static graph.bipartite.Person.*;
 
-import graph.*;
-import graph.bipartite.*;
-import gui.admin.tab.*;
+public class KAryContacts {
+  // TODO: generalise for k-ary
+  public static double averageContacts(int k) {
+    int n = people.size();
+    int total_pairs = 0;
 
-public class ExampleController {
-  public static Map<String, Class<? extends Example>>   examples    = new HashMap<>();
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+        if (people.get(i).activities().anyMatch(people.get(j).activities::contains))
+          total_pairs++;
 
-  static {
-    examples.put("blah", null);
-  }
-
-  public static void loadExample(Example example) {
-    Node.nodes.clear();
-    Activity.activities.clear();
-
-    example.load();
-
-    ActivitiesTable.update();
-  }
-
-  public interface Example {
-    void load();
+    return total_pairs*1.0/n;
   }
 }
