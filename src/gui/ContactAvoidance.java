@@ -28,6 +28,7 @@ import javax.swing.*;
 
 import example.*;
 import gui.admin.*;
+import gui.admin.tab.*;
 import gui.user.*;
 import gui.user.tab.map.*;
 
@@ -36,7 +37,7 @@ public class ContactAvoidance extends JPanel {
 
   private static final String       TITLE               = "Contact Avoidance";
   private static final int          SPACING             = 20;
-  private static final int          PROGRESS_STEPS      = 24;
+  private static final int          PROGRESS_STEPS      = 25;
 
   public static void main(String[] args) {
     System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -135,6 +136,9 @@ public class ContactAvoidance extends JPanel {
       incrementProgress();                          admin_frame.pack();
       incrementProgress();                          user_frame.pack();
       incrementProgress();                          admin_frame.setLocationRelativeTo(null);
+
+      incrementProgress("Loading data");            ExampleGenerator.small();
+      incrementProgress();                          ActivitiesTable.update();
 
       incrementProgress("Launching application");
 

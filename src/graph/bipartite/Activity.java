@@ -72,12 +72,12 @@ public class Activity extends Node {
 
   public List<Building>         locations           = new ArrayList<>();
 
-  public Activity(String name, double start_time, double end_time) {
-    super(new Vector(0, (start_time + end_time)/2, 0));
+  public Activity(String name, double start_time, double duration) {
+    super(new Vector(0, start_time + duration/2, 0));
 
     this.name = name;
     startTime = start_time;
-    endTime = end_time;
+    endTime = start_time + duration;
 
     activities.add(this);
   }
@@ -162,7 +162,7 @@ public class Activity extends Node {
   public List<Activity> deriveActivities() {
     return locations.stream()
                     .map(location -> {
-                      Activity activity = new Activity(name + " " + location, startTime, endTime);
+                      Activity activity = new Activity(name + " " + location, startTime, endTime - startTime);
                       activity.locations.add(location);
                       activity.schedule();
                       return activity;

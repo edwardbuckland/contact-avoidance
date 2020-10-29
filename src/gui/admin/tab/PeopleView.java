@@ -52,7 +52,8 @@ public class PeopleView extends JPanel {
       double[][] similarity_matrix = GraphIntegral.integrate();
       GraphLaplacianTransform.unnormalisedLaplacian(similarity_matrix);
 
-      OptionalDouble spectral_radius = stream(QRSpectralDecomposition.decompose(similarity_matrix)).max();
+      OptionalDouble spectral_radius = stream(QRSpectralDecomposition.decompose(similarity_matrix))
+                                         .peek(Math::abs).max();
 
       if (spectral_radius.isPresent())
         spectralRadiusLabel.setText(format("Laplacian Spectral Radius: %.5f", spectral_radius.getAsDouble()));
@@ -64,6 +65,8 @@ public class PeopleView extends JPanel {
 
       add(header, NORTH);
       add(new SimilarityMatrixPanel(GraphIntegral.integrate(), "Probability", true));
+
+      repaint();
     });
   }
 }

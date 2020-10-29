@@ -27,6 +27,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import graph.bipartite.*;
+import gui.user.tab.*;
 
 public class ActivityView extends JPanel {
   private static final long                 serialVersionUID        = -2605691859436704986L;
@@ -128,6 +129,7 @@ public class ActivityView extends JPanel {
 
       addActionListener(event -> {
         action.run();
+        TimetableTab.timetable.buildTimetable();
         dispose();
       });
     }

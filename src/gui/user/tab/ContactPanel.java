@@ -119,9 +119,10 @@ public class ContactPanel extends JPanel {
         showMessage("Activity may not conclude before it has begun");
       }
       else {
-        new Activity(name.getText(), start_time, end_time);
+        new Activity(name.getText(), start_time, end_time - start_time);
 
         ActivitiesTable.update();
+        TimetableTab.timetable.buildTimetable();
 
         for (Component component: getComponents()) {
           if (component instanceof JTextComponent) {

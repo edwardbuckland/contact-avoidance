@@ -42,6 +42,8 @@ public class TimetableTab extends UserTab {
   private static final int      SPACING             = 8;
   private static final int      LEFT_MARGIN         = 45;
 
+  public static TimetableTab    timetable;
+
   private AutoCompleteTextField textField           = new AutoCompleteTextField(activities);
   private JButton               registerButton      = new JButton("+");
   private JButton               monthButton;
@@ -50,6 +52,8 @@ public class TimetableTab extends UserTab {
 
   public TimetableTab() {
     super(new GridBagLayout());
+
+    timetable = this;
 
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = HORIZONTAL;
@@ -97,16 +101,14 @@ public class TimetableTab extends UserTab {
     return HEIGHT;
   }
 
-  private void buildTimetable() {
+  public void buildTimetable() {
     removeAll();
 
     (person = UserSelector.currentUser).activities()
                                        .forEach(ActivityButton::new);
 
     List<Activity> candidate_activities = activities.stream()
-                                                    .filter(candidate -> person.activities().noneMatch(registered ->
-                                                              registered.startTime < candidate.endTime &&
-                                                              registered.endTime > candidate.startTime))
+                                                    .filter(person::canAttend)
                                                     .collect(Collectors.toList());
 
     textField.options = candidate_activities;

@@ -46,7 +46,7 @@ public class UserPanel extends JPanel {
     tabbed_pane.addTab("Map", null, new MapTab(), "Map");
     try {
       tabbed_pane.addTab("QR Code", null, new JLabel(new ImageIcon(ImageIO.read(
-                         getClass().getResource("/qr-code.png")))), "QR Code");
+                         getClass().getResource("/image/qr-code.png")))), "QR Code");
     }
     catch (IOException e) {
       e.printStackTrace();

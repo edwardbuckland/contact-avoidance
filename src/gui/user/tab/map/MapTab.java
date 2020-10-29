@@ -51,7 +51,7 @@ public class MapTab extends UserTab {
     int percentage = images.isEmpty()? 100: min(images.keySet()) - PERCENTAGE_INCREMENT;
 
     try {
-      images.put(percentage, ImageIO.read(MapTab.class.getResource("/parkville-campus-map" +
+      images.put(percentage, ImageIO.read(MapTab.class.getResource("/image/parkville-campus-map" +
                                           percentage + ".png")));
     }
     catch (Exception e) {

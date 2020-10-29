@@ -117,4 +117,9 @@ public class Person extends ArrayList<Node> implements Drawable {
 
     return shared/(duration.apply(Stream.concat(activities.stream(), person.activities.stream())) - shared);
   }
+
+  public boolean canAttend(Activity activity) {
+    return activities().noneMatch(registered -> registered.startTime < activity.endTime &&
+                                                registered.endTime > activity.startTime);
+  }
 }
