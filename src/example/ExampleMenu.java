@@ -31,9 +31,10 @@ public class ExampleMenu extends JMenu {
 
   public static Map<String, Runnable>   examples    = new HashMap<>();
   static {
-    examples.put("Small",         ExampleGenerator::small);
     examples.put("Binary Split",  ExampleGenerator::twoWaySplit);
     examples.put("Ternary Split", ExampleGenerator::threeWaySplit);
+    examples.put("Small",         ExampleGenerator::small);
+    examples.put("Medium",        ExampleGenerator::medium);
     examples.put("Large",         ExampleGenerator::large);
   }
 

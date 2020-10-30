@@ -62,14 +62,15 @@ public class SimilarityMatrixPanel extends JPanel {
         graphics_2d.translate(0, (height - width)/2.0);
 
       double unit_size = (double)min(width, height)/n;
+      double spacing   = unit_size > 10? unit_size/10: 0;
 
       for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++) {
           double similarity = similarityMatrix[i][j];
 
           graphics_2d.setColor(colourMap(similarity));
-          graphics_2d.fill(new Rectangle2D.Double(i*unit_size +   PADDING, j*unit_size +   PADDING,
-                                                    unit_size - 2*PADDING,   unit_size - 2*PADDING));
+          graphics_2d.fill(new Rectangle2D.Double(i*unit_size +   spacing, j*unit_size +   spacing,
+                                                    unit_size - 2*spacing,   unit_size - 2*spacing));
         }
 
       graphics_2d.translate(min(width, height) + 8*PADDING, 0);

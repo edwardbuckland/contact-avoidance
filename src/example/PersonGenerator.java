@@ -17,6 +17,7 @@
 
 package example;
 
+import static graph.bipartite.Activity.*;
 import static java.util.concurrent.ThreadLocalRandom.*;
 
 import java.io.*;
@@ -46,10 +47,13 @@ public class PersonGenerator {
 
   public static void generatePeople(int n, int max_activities) {
     for (int i = 0; i < n; i++) {
-      Person person = new Person(randomElement(firstNames) + " " + randomElement(lastNames));
+      Person person = new Person(i == 0? "Edward Buckland": randomElement(firstNames) + " " +
+                                 randomElement(lastNames));
 
       for (int j = 0; j < max_activities; j++) {
-        Activity activity = randomElement(Activity.activities);
+        Activity activity = randomElement(j < 3? activities.subList(55, 65):
+                                          j < 5? activities.subList(20, 80):
+                                                 activities);
 
         if (person.canAttend(activity))
         {

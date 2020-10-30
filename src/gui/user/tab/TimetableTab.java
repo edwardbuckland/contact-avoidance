@@ -104,18 +104,20 @@ public class TimetableTab extends UserTab {
   public void buildTimetable() {
     removeAll();
 
-    (person = UserSelector.currentUser).activities()
-                                       .forEach(ActivityButton::new);
+    if (UserSelector.currentUser != null) {
+      (person = UserSelector.currentUser).activities()
+                                         .forEach(ActivityButton::new);
 
-    List<Activity> candidate_activities = activities.stream()
-                                                    .filter(person::canAttend)
-                                                    .collect(Collectors.toList());
+      List<Activity> candidate_activities = activities.stream()
+                                                      .filter(person::canAttend)
+                                                      .collect(Collectors.toList());
 
-    textField.options = candidate_activities;
+      textField.options = candidate_activities;
 
-    boolean enabled = !candidate_activities.isEmpty() && person != null;
-    textField.setEnabled(enabled);
-    registerButton.setEnabled(enabled);
+      boolean enabled = !candidate_activities.isEmpty() && person != null;
+      textField.setEnabled(enabled);
+      registerButton.setEnabled(enabled);
+    }
   }
 
   private int timeToY(double time) {

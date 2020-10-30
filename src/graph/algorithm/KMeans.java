@@ -37,7 +37,9 @@ public class KMeans {
     for (int i = 0; i < n; i++)
       clusters.get(clusters.keySet().toArray()[i%k]).add(i);
 
-    for (AtomicBoolean reassigned = new AtomicBoolean(true); reassigned.get(); reassigned.set(false)) {
+    int iterations = 0;
+    for (AtomicBoolean reassigned = new AtomicBoolean(true); reassigned.get() && iterations < 1000;
+        reassigned.set(false), iterations++) {
       clusters.entrySet().forEach(entry -> {
         for (int i = 0; i < k; i++) {
           final int final_i = i;
