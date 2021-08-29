@@ -57,11 +57,13 @@ public class TimetableTab extends UserTab {
 
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = HORIZONTAL;
+    constraints.ipadx = 2;
 
     monthButton = new JButton("< " + getInstance().getDisplayName(MONTH, SHORT, getLocale()));
     header.add(monthButton, constraints);
 
     constraints.weightx = 1;
+    constraints.ipadx = 0;
 
     textField.setEnabled(false);
     textField.addMouseListener(new GrowListener());

@@ -68,15 +68,15 @@ public class MapTab extends UserTab {
 
     int command_mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
-    ZoomButton zoom_in_button = new ZoomButton(true);
-    getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke(VK_EQUALS, command_mask), "zoom-in");
-    getActionMap().put("zoom-in", zoom_in_button.getAction());
-    header.add(zoom_in_button);
-
     ZoomButton zoom_out_button = new ZoomButton(false);
     getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke(VK_MINUS, command_mask), "zoom-out");
     getActionMap().put("zoom-out", zoom_out_button.getAction());
     header.add(zoom_out_button);
+
+    ZoomButton zoom_in_button = new ZoomButton(true);
+    getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke(VK_EQUALS, command_mask), "zoom-in");
+    getActionMap().put("zoom-in", zoom_in_button.getAction());
+    header.add(zoom_in_button);
 
     addMouseMotionListener(new MapListener());
   }
@@ -157,7 +157,8 @@ public class MapTab extends UserTab {
           }
         }
       });
-
+      
+      setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
     }
 
     @Override

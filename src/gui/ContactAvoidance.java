@@ -21,6 +21,7 @@ import static java.awt.Font.*;
 import static javax.swing.BorderFactory.*;
 import static javax.swing.Box.*;
 import static javax.swing.WindowConstants.*;
+import static javax.swing.UIManager.*;
 
 import java.awt.*;
 
@@ -42,6 +43,12 @@ public class ContactAvoidance extends JPanel {
   public static void main(String[] args) {
     System.setProperty("apple.laf.useScreenMenuBar", "true");
 
+    try {
+    	setLookAndFeel(getSystemLookAndFeelClassName());
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+    
     new ContactAvoidance();
   }
 
@@ -56,7 +63,7 @@ public class ContactAvoidance extends JPanel {
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     setBorder(createEmptyBorder(SPACING, SPACING, SPACING, SPACING));
 
-    launchButton.setPreferredSize(new Dimension(launchButton.getPreferredSize().width, progressBar.getPreferredSize().height
+    launchButton.setPreferredSize(new Dimension(launchButton.getPreferredSize().width*3/2, progressBar.getPreferredSize().height
                                                 + progressLabel.getPreferredSize().height));
     launchButton.setMaximumSize(launchButton.getPreferredSize());
     launchButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -81,10 +88,9 @@ public class ContactAvoidance extends JPanel {
     add(progressBar);
     add(progressLabel);
 
-
     add(createVerticalStrut(SPACING));
 
-    add(new SizedLabel("Copyright Â© 2020 Edward Buckland. Some rights reserved:", ITALIC, 10));
+    add(new SizedLabel("Copyright © 2020 Edward Buckland. Some rights reserved:", ITALIC, 10));
     add(new SizedLabel("this program is distributed under the terms of the GNU Affero GPL", ITALIC, 10));
 
     launchButton.addActionListener(event -> new LaunchTask().execute());

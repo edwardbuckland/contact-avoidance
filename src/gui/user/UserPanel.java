@@ -55,6 +55,8 @@ public class UserPanel extends JPanel {
 
     tabbed_pane.addChangeListener(event -> Node.clearSelection());
     add(tabbed_pane);
+    
+    add(Box.createVerticalStrut(30), BorderLayout.SOUTH);
   }
 
   @Override
