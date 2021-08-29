@@ -53,4 +53,26 @@ public class ExampleGenerator {
     generateActivities();
     PersonGenerator.generatePeople(5000, 8);
   }
+  
+  public static void benchmarking() {
+    large();
+    
+    Activity benchmark_500  = new Activity("Benchmark 500",  0, 0);
+    Activity benchmark_1000 = new Activity("Benchmark 1000", 0, 0);
+    Activity benchmark_1500 = new Activity("Benchmark 1500", 0, 0);
+    
+    for (int i = 0; i < Person.people.size(); i++) {
+    	Person person = Person.people.get(i);
+    	
+    	if (i < 500) {
+    		person.addActivities(benchmark_500);
+    	}
+    	if (i < 1000) {
+    		person.addActivities(benchmark_1000);
+    	}
+    	if (i < 1500) {
+    		person.addActivities(benchmark_1500);
+    	}
+    }
+  }
 }

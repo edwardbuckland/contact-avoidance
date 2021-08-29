@@ -53,9 +53,9 @@ public class SpectralCluster {
   }
   
   public static int[] spectralClusterApacheCommons(double[][] similarity_matrix, int k) {
-	int n = similarity_matrix.length;
+    int n = similarity_matrix.length;
 	  
-  	EigenDecomposition decomposition = new EigenDecomposition(new Array2DRowRealMatrix(similarity_matrix));
+    EigenDecomposition decomposition = new EigenDecomposition(new Array2DRowRealMatrix(similarity_matrix));
   	
     double[]   eigenvalues  = decomposition.getRealEigenvalues();
     double[][] eigenvectors = decomposition.getV().getData();

@@ -187,8 +187,11 @@ public class Activity extends Node {
     List<Activity> derived_activities = deriveActivities();
     List<Person> people = people();
 
+    long start_time = System.nanoTime();
 //    int[] clusters = SpectralCluster.spectralCluster(similarityMatrix(), locations.size());
     int[] clusters = SpectralCluster.spectralClusterApacheCommons(similarityMatrix(), locations.size());
+    System.out.println("Clustered activity size " + people.size() + " into " + locations.size() + " clusters in "
+    					+ (System.nanoTime() - start_time)/1e6 + " ms");
 
     for (int i = 0; i < people().size(); i++)
       people.get(i).addActivities(derived_activities.get(clusters[i]));

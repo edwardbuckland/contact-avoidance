@@ -36,6 +36,7 @@ public class ExampleMenu extends JMenu {
     examples.put("Small",         ExampleGenerator::small);
     examples.put("Medium",        ExampleGenerator::medium);
     examples.put("Large",         ExampleGenerator::large);
+    examples.put("Benchmarking",  ExampleGenerator::benchmarking);
   }
 
   public static JMenuBar createMenuBar() {
