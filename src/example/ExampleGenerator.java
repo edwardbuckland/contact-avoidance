@@ -2,7 +2,10 @@ package example;
 
 import static example.ActivityGenerator.*;
 
+import java.util.*;
+
 import graph.bipartite.*;
+import gui.user.tab.map.*;
 
 public class ExampleGenerator {
   public static void small() {
@@ -57,22 +60,27 @@ public class ExampleGenerator {
   public static void benchmarking() {
     large();
     
-    Activity benchmark_500  = new Activity("Benchmark 500",  0, 0);
-    Activity benchmark_1000 = new Activity("Benchmark 1000", 0, 0);
-    Activity benchmark_1500 = new Activity("Benchmark 1500", 0, 0);
-    
-    for (int i = 0; i < Person.people.size(); i++) {
-    	Person person = Person.people.get(i);
-    	
-    	if (i < 500) {
-    		person.addActivities(benchmark_500);
-    	}
-    	if (i < 1000) {
-    		person.addActivities(benchmark_1000);
-    	}
-    	if (i < 1500) {
-    		person.addActivities(benchmark_1500);
-    	}
+    for (int clusters: new int[]{ 2, 5, 10 }) {
+      Map<Integer, Activity> activities = new TreeMap<>(Map.of(500,  new Activity("Benchmark 500",  0, 0),
+                                                               1000, new Activity("Benchmark 1000", 0, 0),
+                                                               1500, new Activity("Benchmark 1500", 0, 0)));
+      
+      for (int i = 0; i < Person.people.size(); i++) {
+        Person person = Person.people.get(i);
+        
+        for (Map.Entry<Integer, Activity> entry: activities.entrySet()) {
+          if (i < entry.getKey()) {
+            person.addActivities(entry.getValue());
+          }
+        }
+      }
+      
+      for (Activity activity: activities.values()) {
+        for (int i = 0; i < clusters; i++) {
+          activity.locations.add(Building.UNION_HOUSE);
+        }
+        activity.clusteredSplit();
+      }
     }
   }
 }
