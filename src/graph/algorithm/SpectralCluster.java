@@ -25,6 +25,8 @@ import java.util.AbstractMap.*;
 import java.util.Map.*;
 import java.util.stream.*;
 
+import org.apache.commons.math3.linear.*;
+
 public class SpectralCluster {
   public static int[] spectralCluster(double[][] similarity_matrix, int k) {
     int n = similarity_matrix.length;
@@ -48,5 +50,30 @@ public class SpectralCluster {
     }
 
     return KMeans.cluster(similarity_matrix, k);
+  }
+  
+  public static int[] spectralClusterApacheCommons(double[][] similarity_matrix, int k) {
+	int n = similarity_matrix.length;
+	  
+  	EigenDecomposition decomposition = new EigenDecomposition(new Array2DRowRealMatrix(similarity_matrix));
+  	
+    double[]   eigenvalues  = decomposition.getRealEigenvalues();
+    double[][] eigenvectors = decomposition.getV().getData();
+
+    List<Integer> indexes = IntStream.range(0, n)
+                                     .mapToObj(i ->  new SimpleEntry<>(eigenvalues[i], i))
+                                     .sorted((first, second) -> (int)signum(first.getKey() - second.getKey()))
+                                     .map(Entry::getValue)
+                                     .limit(k)
+                                     .collect(toList());
+
+    for (int i = 0; i < n; i++) {
+      final int final_i = i;
+      similarity_matrix[i] = indexes.stream()
+                                    .mapToDouble(index -> eigenvectors[final_i][index])
+                                    .toArray();
+    }
+    
+    return KMeans.cluster(eigenvectors, k);
   }
 }

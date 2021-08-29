@@ -187,7 +187,8 @@ public class Activity extends Node {
     List<Activity> derived_activities = deriveActivities();
     List<Person> people = people();
 
-    int[] clusters = SpectralCluster.spectralCluster(similarityMatrix(), locations.size());
+//    int[] clusters = SpectralCluster.spectralCluster(similarityMatrix(), locations.size());
+    int[] clusters = SpectralCluster.spectralClusterApacheCommons(similarityMatrix(), locations.size());
 
     for (int i = 0; i < people().size(); i++)
       people.get(i).addActivities(derived_activities.get(clusters[i]));
